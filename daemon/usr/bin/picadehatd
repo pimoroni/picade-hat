@@ -13,6 +13,11 @@ import RPi.GPIO as gpio
 
 os.system("sudo modprobe uinput")
 
+DEBUG = False
+
+PIDFILE = "/var/run/picadehatd.pid"
+LOGFILE = "/var/log/picadehatd.log"
+
 BOUNCE_TIME = 0.01 # Debounce time in seconds
 SHUTDOWN_HOLD_TIME = 3 # Time in seconds that power button must be held
 
@@ -59,6 +64,38 @@ states = [False for b in BUTTONS]
 
 shutdown_timer = None
 
+try:
+    pid = os.fork()
+    if pid > 0:
+        sys.exit(0)
+        
+except OSError, e:
+    print("Fork #1 failed: {} ({})".format(e.errno, e.strerror))
+    sys.exit(1)
+    
+os.chdir("/")
+os.setsid()
+os.umask(0)
+
+try:
+    pid = os.fork()
+    if pid > 0:
+        fpid = open(PIDFILE, 'w')
+        fpid.write(str(pid))
+        fpid.close()
+        sys.exit(0)
+except OSError, e:
+    print("Fork #2 failed: {} ({})".format(e.errno, e.strerror))
+    sys.exit(1)
+
+si = file("/dev/null", 'r')
+so = file(LOGFILE, 'a+')
+se = file("/dev/null", 'a+', 0)
+
+os.dup2(si.fileno(), sys.stdin.fileno())
+os.dup2(so.fileno(), sys.stdout.fileno())
+os.dup2(se.fileno(), sys.stderr.fileno())
+
 gpio.setmode(gpio.BCM)
 gpio.setwarnings(False)
 gpio.setup(BUTTONS, gpio.IN, pull_up_down=gpio.PUD_UP)
@@ -68,8 +105,8 @@ try:
     ui = UInput()
 
 except uinput.UInputError as e:
-    print(e.message)
-    print("Have you tried running as root? sudo {}".format(sys.argv[0]))
+    sys.stdout.write(e.message)
+    sys.stdout.write("Have you tried running as root? sudo {}".format(sys.argv[0]))
     sys.exit(0)
 
 def handle_button(pin):
@@ -78,10 +115,11 @@ def handle_button(pin):
     state = 0 if gpio.input(pin) else 1
     ui.write(e.EV_KEY, key, state)
     ui.syn()
-    print("Pin: {}, KeyCode: {}, Event: {}".format(pin, key, 'press' if state else 'release'))
+    if DEBUG:
+        sys.stdout.write("Pin: {}, KeyCode: {}, Event: {}".format(pin, key, 'press' if state else 'release'))
 
 def perform_shutdown():
-    print("Shutting down...")
+    sys.stdout.write("Shutting down...")
     os.system("sudo shutdown -h now")
 
 def handle_shutdown(pin):
@@ -90,7 +128,8 @@ def handle_shutdown(pin):
     time.sleep(BOUNCE_TIME)
     state = 0 if gpio.input(pin) else 1
 
-    print("Power button: {}".format('pressed' if state else 'released'))
+    if DEBUG:
+        sys.stdout.write("Power button: {}".format('pressed' if state else 'released'))
 
     if state and shutdown_timer is None:
         shutdown_timer = Timer(SHUTDOWN_HOLD_TIME, perform_shutdown)
@@ -105,13 +144,14 @@ for button in BUTTONS:
 
 gpio.add_event_detect(BUTTON_POWER, gpio.BOTH, callback=handle_shutdown, bouncetime=1)
 
-print("Picade HAT daemon running...")
+sys.stdout.write("Picade HAT daemon running...")
 
 try:
     signal.pause()
 except KeyboardInterrupt:
     pass
 
-print("Picade HAT daemon shutting down...")
+sys.stdout.write("Picade HAT daemon shutting down...")
 
 ui.close()
+
