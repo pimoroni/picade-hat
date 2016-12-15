@@ -1,0 +1,13 @@
+#! /bin/sh
+
+# file: /lib/systemd/system-shutdown/picade-hat-poweroff
+# $1 will be either "halt", "poweroff", "reboot" or "kexec"
+
+case "$1" in
+  poweroff)
+        /usr/bin/gpio mode 7 out
+        /usr/bin/gpio write 7 0
+        ;;
+esac
+
+:
