@@ -4,6 +4,7 @@ import time
 import signal
 import os
 import sys
+from datetime import datetime
 from threading import Timer
 
 from evdev import uinput, UInput, ecodes as e
@@ -109,6 +110,13 @@ except uinput.UInputError as e:
     sys.stdout.write("Have you tried running as root? sudo {}".format(sys.argv[0]))
     sys.exit(0)
 
+def log(msg):
+    sys.stdout.write(str(datetime.now()))
+    sys.stdout.write(": ")
+    sys.stdout.write(msg)
+    sys.stdout.write("\n")
+    sys.stdout.flush()
+
 def handle_button(pin):
     key = KEYS[pin]
     time.sleep(BOUNCE_TIME)
@@ -116,7 +124,7 @@ def handle_button(pin):
     ui.write(e.EV_KEY, key, state)
     ui.syn()
     if DEBUG:
-        sys.stdout.write("Pin: {}, KeyCode: {}, Event: {}".format(pin, key, 'press' if state else 'release'))
+        log("Pin: {}, KeyCode: {}, Event: {}".format(pin, key, 'press' if state else 'release'))
 
 def perform_shutdown():
     sys.stdout.write("Shutting down...")
@@ -129,7 +137,7 @@ def handle_shutdown(pin):
     state = 0 if gpio.input(pin) else 1
 
     if DEBUG:
-        sys.stdout.write("Power button: {}".format('pressed' if state else 'released'))
+        log("Power button: {}".format('pressed' if state else 'released'))
 
     if state and shutdown_timer is None:
         shutdown_timer = Timer(SHUTDOWN_HOLD_TIME, perform_shutdown)
@@ -144,14 +152,14 @@ for button in BUTTONS:
 
 gpio.add_event_detect(BUTTON_POWER, gpio.BOTH, callback=handle_shutdown, bouncetime=1)
 
-sys.stdout.write("Picade HAT daemon running...")
+log("Picade HAT daemon running...")
 
 try:
     signal.pause()
 except KeyboardInterrupt:
     pass
 
-sys.stdout.write("Picade HAT daemon shutting down...")
+log("Picade HAT daemon shutting down...")
 
 ui.close()
 
