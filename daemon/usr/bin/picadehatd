@@ -127,7 +127,7 @@ def handle_button(pin):
         log("Pin: {}, KeyCode: {}, Event: {}".format(pin, key, 'press' if state else 'release'))
 
 def perform_shutdown():
-    sys.stdout.write("Shutting down...")
+    log("Shutting down...")
     os.system("sudo shutdown -h now")
 
 def handle_shutdown(pin):
