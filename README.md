@@ -73,7 +73,7 @@ In order for your Pi to fully power down, you will need to add a script into `/l
 This script is provided for you, so you can just:
 
 ```
-sudo cp daemon/lib/systemmd/system-shutdown/picade-hat-poweroff /lib/systemd/system-shutdown/
+sudo cp daemon/lib/systemd/system-shutdown/picade-hat-poweroff /lib/systemd/system-shutdown/
 ```
 
 And make sure it's executable with:

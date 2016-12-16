@@ -290,7 +290,7 @@ newline
 newline
 echo "Installing daemon..."
 
-sudo cp ./daemon/lib/systemmd/system-shutdown/picade-hat-poweroff /lib/systemd/system-shutdown/
+sudo cp ./daemon/lib/systemd/system-shutdown/picade-hat-poweroff /lib/systemd/system-shutdown/
 sudo chmod +x /lib/systemd/system-shutdown/picade-hat-poweroff
 sudo cp ./daemon/etc/init.d/picadehatd /etc/init.d/
 sudo cp ./daemon/usr/bin/picadehatd /usr/bin/
