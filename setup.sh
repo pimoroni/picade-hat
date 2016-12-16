@@ -356,7 +356,7 @@ if [ -e /etc/asound.conf ]; then
     fi
     sudo mv /etc/asound.conf /etc/asound.conf.old
 fi
-sudo cp ./daemon/asound.conf /etc/asound.conf
+sudo cp ./daemon/etc/asound.conf /etc/asound.conf
 
 newline && success "All done!" && newline
 echo "Enjoy your new $productname!" && newline
