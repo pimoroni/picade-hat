@@ -46,7 +46,9 @@ sudo chmod +x /lib/systemd/system-shutdown
 
 ## Sound & Volume Control
 
-You'll need to edit `/boot/config.txt` so that regular audio is disabled and i2s is enabled, like so:
+You will need to configure some things to get functioning sound and volume control with Picade HAT. We're going to trick EmulationStation into thinking our new software mixer, needed to control the volume of the i2s audio, is the old "PCM" sound device your Pi would normally have.
+
+First you need to edit `/boot/config.txt` so that regular audio is disabled and i2s is enabled, like so:
 
 ```
 #dtparam=audio=on
@@ -54,54 +56,76 @@ dtoverlay=i2s-mmap
 dtoverlay=hifiberry-dac
 ```
 
-Next edit `/etc/asound.conf`:
+You can use our pHAT DAC one-line installer to perform the above steps if you'd like:
 
 ```
-pcm.dmixer { 
-    type dmix 
-    ipc_key 1024
-    ipc_key_add_uid false
-    ipc_perm 0666			# mixing for all users
-    slave { 
-        pcm "hw:0,0" 
-        period_time 0 
-        period_size 1024 
-        buffer_size 8192
-        rate 44100
-    }
-    bindings { 
-        0 0 
-        1 1 
-    } 
-} 
+\curl -sS https://get.pimoroni.com/phatdac | bash
+```
 
-pcm.dsp0 { 
-    type plug 
-    slave.pcm "dmixer" 
-} 
+Next, for volume control to work you need to edit `/etc/asound.conf`:
 
-pcm.!default { 
-    type plug 
-    slave.pcm "dmixer" 
-} 
+(Note: you can find this file in daemon/etc/asound.conf)
 
-pcm.default { 
-   type plug 
-   slave.pcm "dmixer" 
-} 
-
-ctl.mixer0 { 
-    type hw 
-    card 0 
+```
+# the sound card
+pcm.real {
+  type hw
+  card 0
+  device 0
 }
-```
 
-And set up the right software:
+#support  the ipc stuff is needed for permissions, etc.
+pcm.dmixer {
+  type dmix
+  ipc_key 1024
+  ipc_perm 0666
+  slave.pcm "real"
+  slave {
+    period_time 0
+    period_size 1024
+    buffer_size 8192
+    rate 44100
+  }
+  bindings {
+    0 0
+    1 1
+  }
+}
 
-```bash
-sudo apt-get --purge autoremove pulseaudio
+ctl.dmixer {
+  type hw
+  card 0
+}
 
-sudo apt-get remove jack-daemon
+# software volume
+pcm.softvol {
+  type softvol
+  slave.pcm "dmixer"
+  control {
+    name "PCM"
+    card 0
+   }
+}
 
-sudo apt-get install mpd mpc pianobar alsa-base alsa-oss alsa-tools alsa-utils alsaplayer-alsa alsaplayer-common gstreamer0.10-alsa gstreamer1.0-alsa alsa-oss oss-compat libsmartcols1 jackd libjack-jackd2-0:armhf qjackctl esound-common libasound2:armhf libasound2-data libasound2-plugins libsoundtouch0:armhf libtext-soundex-perl libsdl-mixer1.2:armhf pimixer
+# input
+pcm.input {
+   type dsnoop
+   ipc_key 3129398
+   ipc_key_add_uid false
+   ipc_perm 0660
+   slave.pcm "810"
+}
+
+# duplex device
+pcm.duplex {
+   type asym
+   playback.pcm "softvol"
+   capture.pcm "input"
+}
+
+# default devices
+pcm.!default {
+   type plug
+   slave.pcm "duplex"
+}
 ```
