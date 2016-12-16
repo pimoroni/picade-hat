@@ -282,12 +282,11 @@ echo "Always be careful when running scripts and commands"
 echo "copied from the internet. Ensure they are from a"
 echo "trusted source."
 newline
-echo "If you want to see what this script does before"
-echo "running it, you should run:"
-echo "    \curl -sS get.pimoroni.com/$scriptname"
-newline
 
-newline
+echo "Installing dependencies..."
+
+sudo dpkg -i ./dependencies/python-evdev_0.6.4-1_armhf.deb
+
 echo "Installing daemon..."
 
 sudo cp ./daemon/lib/systemd/system-shutdown/picade-hat-poweroff /lib/systemd/system-shutdown/
