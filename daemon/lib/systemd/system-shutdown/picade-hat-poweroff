@@ -5,9 +5,9 @@
 
 case "$1" in
   poweroff)
-        echo 4 > /sys/class/gpio/export
-        echo out > /sys/class/gpio/gpio4/direction
-        echo 0 > /sys/class/gpio/gpio4/value
+        /bin/echo 4 > /sys/class/gpio/export
+        /bin/echo out > /sys/class/gpio/gpio4/direction
+        /bin/echo 0 > /sys/class/gpio/gpio4/value
         /bin/sleep 0.5
         ;;
 esac
