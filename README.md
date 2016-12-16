@@ -61,6 +61,7 @@ sudo cp daemon/etc/init.d/picadehatd /etc/init.d/
 sudo cp daemon/usr/bin/picadehatd /usr/bin/
 sudo systemctl daemon-reload
 sudo systemctl enable picadehatd
+sudo service picadehatd start
 ```
 
 ## Power-off Script
@@ -93,11 +94,7 @@ dtoverlay=i2s-mmap
 dtoverlay=hifiberry-dac
 ```
 
-You can use our pHAT DAC one-line installer to perform the above steps if you'd like:
-
-```
-\curl -sS https://get.pimoroni.com/phatdac | bash
-```
+(Note, that's i2s-mmap, not i2c-mmap!)
 
 Next, for volume control to work you need to edit `/etc/asound.conf`:
 
@@ -166,3 +163,5 @@ pcm.!default {
    slave.pcm "duplex"
 }
 ```
+
+And, finally, reboot and configure your controls!
