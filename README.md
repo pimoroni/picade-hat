@@ -22,15 +22,25 @@ sudo ifdown wlan0
 sudo ifup wlan0
 ``` 
 
-## Grab This Repository
+# One-line Installation (Recommended)
 
-Clone this GitHub repository somewhere onto your Pi.
+Before setting up your RetroPie config, just hit F4 and then type:
 
 ```
-git clone https://github.com/pimoroni/picade-hat
+curl -sS https://get.pimoroni.com/picadehat | bash
 ```
 
-# Automatic Installation (NOT AVAILABLE YET!)
+Setup will continue automatically. When it's finished you can return to EmulationStation by typing:
+
+```
+emulationstation
+```
+
+And bind your input as normal!
+
+# Automatic Installation
+
+* Clone this GitHub repository somewhere onto your Pi: `git clone https://github.com/pimoroni/picade-hat`
 
 * Enter the new directory: `cd picade-hat`
 
@@ -40,16 +50,14 @@ git clone https://github.com/pimoroni/picade-hat
 
 # Manual Installation
 
+Use one of the methods above unless you *really* know what you're doing. The below steps let you pick and choose/customise the install to your needs.
+
 ## Required Software
 
-You'll need to install some things first:
+You'll need to install evdev first:
 
 ```
-sudo apt-get install python-pip python-dev
-```
-
-```
-sudo pip install evdev
+sudo dpkg -i dependencies/python-evdev_0.6.4-1_armhf.deb
 ```
 
 ## Input Daemon
