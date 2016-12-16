@@ -5,8 +5,10 @@
 
 case "$1" in
   poweroff)
-        /usr/bin/gpio mode 7 out
-        /usr/bin/gpio write 7 0
+        echo 4 > /sys/class/gpio/export
+        echo out > /sys/class/gpio/gpio4/direction
+        echo 0 > /sys/class/gpio/gpio4/value
+        /bin/sleep 0.5
         ;;
 esac
 
