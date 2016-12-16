@@ -4,19 +4,7 @@ This repository contains the software you need to get started with your Picade H
 
 Before you continue, you should make sure that you're running the latest RetroPie, have your Pi connected to the internet and have a keyboard ready to run through the setup steps.
 
-#Automatic Installation
-
-* Boot your Pi with RetroPie as normal and wait for EmulationStation to load
-
-* Hit F4 to exit EmulationStation
-
-* Type: `git clone https://github.com/pimoroni/picade-hat`
-
-* Enter the new directory: `cd picade-hat`
-
-* Run the installer: `sudo ./setup.sh`
-
-# Manual Installation
+# Preparing RetroPie
 
 Create yourself a new RetroPie SD card with the image found here: https://retropie.org.uk/download/
 
@@ -41,6 +29,16 @@ Clone this GitHub repository somewhere onto your Pi.
 ```
 git clone https://github.com/pimoroni/picade-hat
 ```
+
+#Automatic Installation (NOT AVAILABLE YET!)
+
+* Enter the new directory: `cd picade-hat`
+
+* Run the installer: `sudo ./setup.sh`
+
+* Enjoy!
+
+# Manual Installation
 
 ## Input Daemon
 
