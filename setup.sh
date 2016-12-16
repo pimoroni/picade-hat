@@ -288,7 +288,17 @@ echo "    \curl -sS get.pimoroni.com/$scriptname"
 newline
 
 newline
-echo "Checking hardware requirements..."
+echo "Installing daemon..."
+
+sudo cp ./daemon/lib/systemmd/system-shutdown/picade-hat-poweroff /lib/systemd/system-shutdown/
+sudo chmod +x /lib/systemd/system-shutdown/picade-hat-poweroff
+sudo cp ./daemon/etc/init.d/picadehatd /etc/init.d/
+sudo cp ./daemon/usr/bin/picadehatd /usr/bin/
+sudo systemctl daemon-reload
+sudo systemctl enable picadehatd
+sudo service picadehatd start
+
+echo "Configuring sound output"
 
 if [ -e $CONFIG ] && grep -q "^device_tree=$" $CONFIG; then
     DEVICE_TREE=false
@@ -349,7 +359,6 @@ else
     bcm2835off="yes"
 fi
 
-echo "Configuring sound output"
 if [ -e /etc/asound.conf ]; then
     if [ -e /etc/asound.conf.old ]; then
         sudo rm -f /etc/asound.conf.old
