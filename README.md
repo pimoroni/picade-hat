@@ -18,7 +18,29 @@ Before you continue, you should make sure that you're running the latest RetroPi
 
 # Manual Installation
 
+Create yourself a new RetroPie SD card with the image found here: https://retropie.org.uk/download/
+
+If you're using a Pi 3, or a Pi with a wireless adaptor, you can also drop a `wpa_supplicant.conf` into the BOOT folder.
+
+On first boot, at the control config screen hit F4 to exit to the command-line.
+
+## WiFi
+
+If you dropped a `wpa_supplicant.conf` into `/boot`, it wont be installed by default, yet, but now it's easy to set up your WiFi like so:
+
+```
+sudo cp /boot/wpa_supplicant.conf /etc/wpa_supplicant/
+sudo ifdown wlan0
+sudo ifup wlan0
+``` 
+
+## Grab This Repository
+
 Clone this GitHub repository somewhere onto your Pi.
+
+```
+git clone https://github.com/pimoroni/picade-hat
+```
 
 ## Input Daemon
 
@@ -27,6 +49,7 @@ You will need to install the Picade HAT "daemon", (picadehatd), this involves tw
 ```
 sudo cp daemon/etc/init.d/picadehatd /etc/init.d/
 sudo cp daemon/usr/bin/picadehatd /usr/bin/
+sudo systemctl daemon-reload
 sudo systemctl enable picadehatd
 ```
 
