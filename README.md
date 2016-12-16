@@ -30,7 +30,7 @@ Clone this GitHub repository somewhere onto your Pi.
 git clone https://github.com/pimoroni/picade-hat
 ```
 
-#Automatic Installation (NOT AVAILABLE YET!)
+# Automatic Installation (NOT AVAILABLE YET!)
 
 * Enter the new directory: `cd picade-hat`
 
@@ -39,6 +39,18 @@ git clone https://github.com/pimoroni/picade-hat
 * Enjoy!
 
 # Manual Installation
+
+## Required Software
+
+You'll need to install some things first:
+
+```
+sudo apt-get install python-pip python-dev
+```
+
+```
+sudo pip install evdev
+```
 
 ## Input Daemon
 
