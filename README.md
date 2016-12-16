@@ -22,9 +22,13 @@ Clone this GitHub repository somewhere onto your Pi.
 
 ## Input Daemon
 
-You will need to start up the `picade-hat-daemon.py` script at boot, the best way to do this is with cron.
+You will need to install the Picade HAT "daemon", (picadehatd), this involves two files; the init script and the daemon itself:
 
-Run `crontab -e`, pick your preferred editor and then add the line `@reboot sudo /path/to/picade-hat-daemon.py`
+```
+sudo cp daemon/etc/init.d/picadehatd /etc/init.d/
+sudo cp daemon/usr/bin/picadehatd /usr/bin/
+sudo systemctl enable picadehatd
+```
 
 ## Power-off Script
 
@@ -32,16 +36,16 @@ The shutdown daemon will watch Picade HAT's power button and call `sudo shutdown
 
 In order for your Pi to fully power down, you will need to add a script into `/lib/systemd/system-shutdown/`
 
-This script is provided in the `scripts` directory, so you can just:
+This script is provided for you, so you can just:
 
 ```
-sudo cp scripts/picade-hat-poweroff /lib/systemd/system-shutdown
+sudo cp daemon/lib/systemmd/system-shutdown/picade-hat-poweroff /lib/systemd/system-shutdown/
 ```
 
 And make sure it's executable with:
 
 ```
-sudo chmod +x /lib/systemd/system-shutdown
+sudo chmod +x /lib/systemd/system-shutdown/picade-hat-poweroff
 ```
 
 ## Sound & Volume Control
