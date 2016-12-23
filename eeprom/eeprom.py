@@ -7,7 +7,7 @@ EEPROM_TYPE = '24c32'
 GPIO_WRITE_PROTECT = 7
 TOOLS_DIR = './'
 
-eepflash = os.path.join(TOOLS_DIR, 'eepflash.sh')
+eepflash = os.path.join(TOOLS_DIR, 'eepflash')
 eepmake  = os.path.join(TOOLS_DIR, 'eepmake')
 
 def write_unlock():
