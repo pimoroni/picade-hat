@@ -29,15 +29,10 @@ if ls /dev/i2c* &> /dev/null; then
     echo "I2C already enabled"
 else
     echo "I2C must be enabled"
-    \curl -sS https://get.pimoroni.com/i2c0 | sudo bash -s - "-y"
+    \curl -sS https://get.pimoroni.com/i2c | sudo bash -s - "-y"
 fi
 
-if [ -e $CONFIG ] && grep -q "^dtparam=i2c_vc=on$" $CONFIG; then
-    echo "i2c0 bus is active"
-else
-    echo "i2c0 bus must be enabled"
-    \curl -sS https://get.pimoroni.com/i2c0 | sudo bash -s - "-y"
-fi
+sudo dtparam i2c_vc=on
 
 if [ "$flashblob" == "yes" ] && [ "$forceflash" == "yes" ]; then
 	sudo python $script write "$settings" "$hatdtbo" force
@@ -56,7 +51,5 @@ if [ -n "$match" ]; then
 else
     warning "\nproduct ID does NOT match!!!!!!!!!!!!!\n"
 fi
-
-sudo sed -i "s|^dtparam=i2c_vc=on|#dtparam=i2c_vc=on|" $CONFIG &> /dev/null
 
 exit 0
