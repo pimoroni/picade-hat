@@ -28,7 +28,7 @@ if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root" 1>&2
    exit 1
 fi
- 
+
 while [ "$1" != "" ]; do
     PARAM=`echo $1 | awk -F= '{print $1}'`
     VALUE=`echo $1 | awk -F= '{print $2}'`
@@ -63,7 +63,7 @@ while [ "$1" != "" ]; do
     esac
     shift
 done
- 
+
 if [ "$MODE" = "NOT_SET" ]; then
 	echo "You need to set mode (read or write). Try -h for help."
 	exit 1
@@ -135,3 +135,6 @@ if [ $rc != 0 ]; then
 else
 	echo "Done."
 fi
+
+exit 0
+
