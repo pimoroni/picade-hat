@@ -12,6 +12,13 @@
     compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709";
 
     fragment@0 {
+        gpio-poweroff {
+            compatible = "gpio-poweroff";
+            gpios = <&gpio 4 0>;
+        };
+    };
+
+    fragment@1 {
         target = <&gpio>;
         __overlay__ {
             input_pins: input_pins {
@@ -22,7 +29,7 @@
         };
     };
 
-    fragment@1 {
+    fragment@2 {
       target-path = "/soc";
       __overlay__ {
          gpiosetup {
