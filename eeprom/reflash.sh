@@ -25,15 +25,6 @@ newline() {
 
 newline
 
-if ls /dev/i2c* &> /dev/null; then
-    echo "I2C already enabled"
-else
-    echo "I2C must be enabled"
-    \curl -sS https://get.pimoroni.com/i2c | sudo bash -s - "-y"
-fi
-
-sudo dtparam i2c_vc=on
-
 if [ "$flashblob" == "yes" ] && [ "$forceflash" == "yes" ]; then
 	sudo python $script write "$settings" "$hatdtbo" force
 elif [ "$flashblob" == "yes" ]; then
@@ -44,9 +35,9 @@ else
 	sudo python $script write "$settings"
 fi
 
-match=$(sudo python $script write "$settings" | grep "$productid")
+product=$(sudo python $script read product)
 
-if [ -n "$match" ]; then
+if [ -n "$product" ]; then
     success "\nproduct ID match settings\n"
 else
     warning "\nproduct ID does NOT match!!!!!!!!!!!!!\n"
