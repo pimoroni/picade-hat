@@ -11,17 +11,17 @@
 / {
     compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709";
 
-	fragment@0 {
-		target-path = "/";
-		__overlay__ {
-			power_ctrl: power_ctrl {
-				compatible = "gpio-poweroff";
-				gpios = <&gpio 4 0>;
-				input;
-				force;
-			};
-		};
-	};
+    fragment@0 {
+        target-path = "/";
+        __overlay__ {
+            power_ctrl: power_ctrl {
+                compatible = "gpio-poweroff";
+                gpios = <&gpio 4 0>;
+                input;
+                force;
+            };
+        };
+    };
 
     fragment@1 {
         target = <&gpio>;
