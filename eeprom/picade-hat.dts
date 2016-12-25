@@ -12,8 +12,24 @@
     compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709";
 
     fragment@0 {
+        target-path = "/";
+        __overlay__ {
+            power_ctrl: power_ctrl {
+                compatible = "gpio-poweroff";
+                gpios = <&gpio 4 0>;
+                input;
+                force;
+            };
+        };
+    };
+
+    fragment@1 {
         target = <&gpio>;
         __overlay__ {
+            power_ctrl_pins: power_ctrl_pins {
+                brcm,pins = <4>;
+                brcm,function = <0>; // in
+            };
             input_pins: input_pins {
                 brcm,pins = <5 6 8 9 10 11 12 16 17 20 22 23 24 25 27>;
                 brcm,function = <0>; /* in */
@@ -22,15 +38,14 @@
         };
     };
 
-    fragment@1 {
+    fragment@2 {
       target-path = "/soc";
       __overlay__ {
          gpiosetup {
             pinctrl-names = "default";
-            pinctrl-0 = <&input_pins>;
+            pinctrl-0 = <&power_ctrl_pins &input_pins>;
             status = "okay";
          };
       };
    };
 };
-
