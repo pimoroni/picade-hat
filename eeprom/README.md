@@ -4,8 +4,7 @@ Pimoroni HAT boards ship with a pre-programmed EEPROM, so most users will never 
 
 **While it's safe to reflash a HAT EEPROM, we typically do not recommend doing so unless you are instructed to do so.**
 
-To reflash a HAT EEPROM, you will need a Raspberry Pi with no on-board Bluetooth chip - so the Raspberry Pi 3 cannot be used, unless you completely disable the BCM43438 chip.
-Your Pi should also not be connected to a Raspberry Pi touch display (DSI) as it will interfere with the flashing of EEPROM.
+To reflash a HAT EEPROM, the only thing you need is a Raspberry Pi B+/2/3 or Zero.
 
 As long as you meet the above requirements and are using a fairly recent version of Raspbian then our ready-to-go script should do the rest for you. Just run:
 
