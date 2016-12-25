@@ -17,6 +17,7 @@
 			power_ctrl: power_ctrl {
 				compatible = "gpio-poweroff";
 				gpios = <&gpio 4 0>;
+				input;
 				force;
 			};
 		};
@@ -27,7 +28,7 @@
         __overlay__ {
 			power_ctrl_pins: power_ctrl_pins {
 				brcm,pins = <4>;
-				brcm,function = <1>; // out
+				brcm,function = <0>; // in
 			};
             input_pins: input_pins {
                 brcm,pins = <5 6 8 9 10 11 12 16 17 20 22 23 24 25 27>;
