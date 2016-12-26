@@ -12,6 +12,33 @@
     compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709";
 
     fragment@0 {
+        target = <&i2s>;
+        __overlay__ {
+            status = "okay";
+        };
+    };
+
+    fragment@1 {
+        target-path = "/";
+        __overlay__ {
+            pcm5102a-codec {
+                #sound-dai-cells = <0>;
+                compatible = "ti,pcm5102a";
+                status = "okay";
+            };
+        };
+    };
+
+    fragment@2 {
+        target = <&sound>;
+        __overlay__ {
+            compatible = "hifiberry,hifiberry-dac";
+            i2s-controller = <&i2s>;
+            status = "okay";
+        };
+    };
+
+    fragment@3 {
         target-path = "/";
         __overlay__ {
             power_ctrl: power_ctrl {
@@ -23,22 +50,22 @@
         };
     };
 
-    fragment@1 {
+    fragment@4 {
         target = <&gpio>;
         __overlay__ {
             power_ctrl_pins: power_ctrl_pins {
                 brcm,pins = <4>;
-                brcm,function = <0>; // in
+                brcm,function = <0>; /* in at boot time */
             };
             input_pins: input_pins {
                 brcm,pins = <5 6 8 9 10 11 12 16 17 20 22 23 24 25 27>;
                 brcm,function = <0>; /* in */
-                brcm,pull = <2>; /* none down up */
+                brcm,pull = <2>; /* up */
             };
         };
     };
 
-    fragment@2 {
+    fragment@5 {
       target-path = "/soc";
       __overlay__ {
          gpiosetup {
