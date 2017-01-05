@@ -103,7 +103,7 @@ gpio.setup(BUTTONS, gpio.IN, pull_up_down=gpio.PUD_UP)
 gpio.setup(BUTTON_POWER, gpio.IN, pull_up_down=gpio.PUD_UP)
 
 try:
-    ui = UInput()
+    ui = UInput({e.EV_KEY: KEYS.values()}, name="Picade-HAT", bustype=e.BUS_USB)
 
 except uinput.UInputError as e:
     sys.stdout.write(e.message)
