@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if ! command -v amixer > /dev/null; then
+    echo "amixer not found. Try sudo apt-get install alsa-utils" && exit 1
+fi
+
+VAL=$(amixer get 'PCM' 2> /dev/null | grep -E -o -m 1 -e '[0-9-]+%')
+
+declare -i NEW=0
+
+if [[ "$1" == "+" ]] && [[ "$VAL" != "100%" ]]; then
+    NEW=($(echo "$VAL" | rev | cut -c 2- | rev)+5)
+    amixer set 'PCM' $NEW%
+elif [[ "$1" == "-" ]] && [[ "$VAL" != "0%" ]]; then
+    NEW=($(echo "$VAL" | rev | cut -c 2- | rev)-5)
+    if [[ $NEW -ge 0 ]]; then
+        amixer set 'PCM' $NEW%
+    fi
+fi
+
+exit 0
