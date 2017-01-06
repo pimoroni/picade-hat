@@ -7,8 +7,16 @@ import sys
 from datetime import datetime
 from threading import Timer
 
-from evdev import uinput, UInput, ecodes as e
-import RPi.GPIO as gpio
+try:
+    from evdev import uinput, UInput, ecodes as e
+except ImportError:
+    exit("This library requires the evdev module\nInstall with: sudo pip install evdev")
+
+try:
+    import RPi.GPIO as gpio
+except ImportError:
+    exit("This library requires the RPi.GPIO module\nInstall with: sudo pip install RPi.GPIO")
+
 
 #time.sleep(30)
 
@@ -24,6 +32,8 @@ SHUTDOWN_HOLD_TIME = 3 # Time in seconds that power button must be held
 
 SHUTDOWN = 4
 BUTTON_POWER = 17
+VOLUME_DOWN = 13
+VOLUME_UP = 26
 
 UP = 12
 DOWN = 6
@@ -101,6 +111,8 @@ gpio.setmode(gpio.BCM)
 gpio.setwarnings(False)
 gpio.setup(BUTTONS, gpio.IN, pull_up_down=gpio.PUD_UP)
 gpio.setup(BUTTON_POWER, gpio.IN, pull_up_down=gpio.PUD_UP)
+gpio.setup(VOLUME_DOWN, gpio.IN, pull_up_down=gpio.PUD_UP)
+gpio.setup(VOLUME_UP, gpio.IN, pull_up_down=gpio.PUD_UP)
 
 try:
     ui = UInput({e.EV_KEY: KEYS.values()}, name="Picade-HAT", bustype=e.BUS_USB)
@@ -147,10 +159,24 @@ def handle_shutdown(pin):
         shutdown_timer.cancel()
         shutdown_timer = None
 
+def decrease_volume(pin):
+    time.sleep(BOUNCE_TIME)
+    state = 0 if gpio.input(pin) else 1
+    if state:
+        os.system("mixvolume -")
+
+def increase_volume(pin):
+    time.sleep(BOUNCE_TIME)
+    state = 0 if gpio.input(pin) else 1
+    if state:
+        os.system("mixvolume +")
+
 for button in BUTTONS:
     gpio.add_event_detect(button, gpio.BOTH, callback=handle_button, bouncetime=1)
 
 gpio.add_event_detect(BUTTON_POWER, gpio.BOTH, callback=handle_shutdown, bouncetime=1)
+gpio.add_event_detect(VOLUME_DOWN, gpio.BOTH, callback=decrease_volume, bouncetime=1)
+gpio.add_event_detect(VOLUME_UP, gpio.BOTH, callback=increase_volume, bouncetime=1)
 
 log("Picade HAT daemon running...")
 
@@ -162,4 +188,3 @@ except KeyboardInterrupt:
 log("Picade HAT daemon shutting down...")
 
 ui.close()
-
