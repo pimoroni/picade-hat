@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-# Picade HAT default configuration
-# maps all buttons, joystick and utility inputs
-# as well as volume control on bcm13 and bcm26
-# soft shutdown is supported
+# Adafruit PiGRRL PCB default configuration
+# maps buttons to GPIO for connection to PiTFT
+# or mounting back to back to a Raspberry Pi Zero
+# soft shutdown is not supported
 
 import time
 import signal
@@ -28,42 +28,31 @@ except ImportError:
 os.system("sudo modprobe uinput")
 
 DEBUG = False
-VOLUME_CONTROL = True
 
 PIDFILE = "/var/run/picadehatd.pid"
 LOGFILE = "/var/log/picadehatd.log"
 
 BOUNCE_TIME = 0.01 # Debounce time in seconds
-SHUTDOWN_HOLD_TIME = 3 # Time in seconds that power button must be held
 
-SHUTDOWN = 4
-BUTTON_POWER = 17
-VOLUME_DOWN = 13
-VOLUME_UP = 26
+UP = 16
+DOWN = 26
+LEFT = 4
+RIGHT = 19
 
-UP = 12
-DOWN = 6
-LEFT = 20
-RIGHT = 16
+BUTTON1 = 14
+BUTTON2 = 15
+BUTTON3 = 20
+BUTTON4 = 18
+BUTTON5 = 12
+BUTTON6 = 13
 
-BUTTON1 = 5
-BUTTON2 = 11
-BUTTON3 = 8
-BUTTON4 = 25
-BUTTON5 = 9
-BUTTON6 = 10
+ENTER = 5
+START= 6
 
-ENTER = 27
-ESCAPE = 22
-COIN = 23
-START= 24
-
-BUTTONS = [ENTER,ESCAPE,COIN,START,BUTTON1,BUTTON2,BUTTON3,BUTTON4,BUTTON5,BUTTON6,UP,DOWN,LEFT,RIGHT]
+BUTTONS = [ENTER,START,BUTTON1,BUTTON2,BUTTON3,BUTTON4,BUTTON5,BUTTON6,UP,DOWN,LEFT,RIGHT]
 
 KEYS = {
     ENTER: e.KEY_ENTER,
-    ESCAPE: e.KEY_ESC,
-    COIN: e.KEY_C,
     START: e.KEY_S,
     UP: e.KEY_UP,
     DOWN: e.KEY_DOWN,
@@ -78,8 +67,6 @@ KEYS = {
 }
 
 states = [False for b in BUTTONS]
-
-shutdown_timer = None
 
 try:
     pid = os.fork()
@@ -116,14 +103,9 @@ os.dup2(se.fileno(), sys.stderr.fileno())
 gpio.setmode(gpio.BCM)
 gpio.setwarnings(False)
 gpio.setup(BUTTONS, gpio.IN, pull_up_down=gpio.PUD_UP)
-gpio.setup(BUTTON_POWER, gpio.IN, pull_up_down=gpio.PUD_UP)
-
-if VOLUME_CONTROL:
-    gpio.setup(VOLUME_DOWN, gpio.IN, pull_up_down=gpio.PUD_UP)
-    gpio.setup(VOLUME_UP, gpio.IN, pull_up_down=gpio.PUD_UP)
 
 try:
-    ui = UInput({e.EV_KEY: KEYS.values()}, name="Picade-HAT", bustype=e.BUS_USB)
+    ui = UInput({e.EV_KEY: KEYS.values()}, name="PiGRRL-PCB", bustype=e.BUS_USB)
 
 except uinput.UInputError as e:
     sys.stdout.write(e.message)
@@ -146,55 +128,16 @@ def handle_button(pin):
     if DEBUG:
         log("Pin: {}, KeyCode: {}, Event: {}".format(pin, key, 'press' if state else 'release'))
 
-def perform_shutdown():
-    log("Shutting down...")
-    os.system("sudo shutdown -h now")
-
-def handle_shutdown(pin):
-    global shutdown_timer
-
-    time.sleep(BOUNCE_TIME)
-    state = 0 if gpio.input(pin) else 1
-
-    if DEBUG:
-        log("Power button: {}".format('pressed' if state else 'released'))
-
-    if state and shutdown_timer is None:
-        shutdown_timer = Timer(SHUTDOWN_HOLD_TIME, perform_shutdown)
-        shutdown_timer.start()
-
-    elif not state and shutdown_timer is not None:
-        shutdown_timer.cancel()
-        shutdown_timer = None
-
-def decrease_volume(pin):
-    time.sleep(BOUNCE_TIME)
-    state = 0 if gpio.input(pin) else 1
-    if state:
-        os.system("picade-mixvolume -")
-
-def increase_volume(pin):
-    time.sleep(BOUNCE_TIME)
-    state = 0 if gpio.input(pin) else 1
-    if state:
-        os.system("picade-mixvolume +")
-
 for button in BUTTONS:
     gpio.add_event_detect(button, gpio.BOTH, callback=handle_button, bouncetime=1)
 
-gpio.add_event_detect(BUTTON_POWER, gpio.BOTH, callback=handle_shutdown, bouncetime=1)
-
-if VOLUME_CONTROL:
-    gpio.add_event_detect(VOLUME_DOWN, gpio.BOTH, callback=decrease_volume, bouncetime=1)
-    gpio.add_event_detect(VOLUME_UP, gpio.BOTH, callback=increase_volume, bouncetime=1)
-
-log("Picade HAT daemon running...")
+log("daemon running...")
 
 try:
     signal.pause()
 except KeyboardInterrupt:
     pass
 
-log("Picade HAT daemon shutting down...")
+log("daemon shutting down...")
 
 ui.close()
