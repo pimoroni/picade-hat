@@ -62,10 +62,11 @@ sudo dpkg -i dependencies/python-evdev_0.6.4-1_armhf.deb
 
 ## Input Daemon
 
-You will need to install the Picade HAT "daemon", (picadehatd), this involves two files; the init script and the daemon itself:
+You will need to install the Picade HAT "daemon", (picadehatd), this involves three files; the init script, a udev rule and the daemon itself:
 
 ```
 sudo cp daemon/etc/init.d/picadehatd /etc/init.d/
+sudo cp daemon/etc/udev/rules.d/10-picadehatd.rules /etc/udev/rules.d/
 sudo cp daemon/usr/bin/picadehatd /usr/bin/
 sudo systemctl daemon-reload
 sudo systemctl enable picadehatd
@@ -109,14 +110,12 @@ Next, for volume control to work you need to edit `/etc/asound.conf`:
 (Note: you can find this file in daemon/etc/asound.conf)
 
 ```
-# the sound card
 pcm.real {
   type hw
   card 0
   device 0
 }
 
-#support  the ipc stuff is needed for permissions, etc.
 pcm.dmixer {
   type dmix
   ipc_key 1024
@@ -139,37 +138,33 @@ ctl.dmixer {
   card 0
 }
 
-# software volume
 pcm.softvol {
   type softvol
   slave.pcm "dmixer"
   control {
-    name "PCM"
+    name "PCM" # Masquerade as the default "PCM" sound device on Pi (for EmulationStation)
     card 0
    }
 }
 
-# input
-pcm.input {
-   type dsnoop
-   ipc_key 3129398
-   ipc_key_add_uid false
-   ipc_perm 0660
-   slave.pcm "810"
-}
-
-# duplex device
-pcm.duplex {
-   type asym
-   playback.pcm "softvol"
-   capture.pcm "input"
-}
-
-# default devices
 pcm.!default {
    type plug
-   slave.pcm "duplex"
+   slave.pcm "softvol"
 }
 ```
+
+Although optional, it is also possible to control the volume in-game via dedicated buttons wired to bcm13 (decrease volume) and bcm26 (increase volume). If you opt to do so, you will need to copy over the `picade-mixvolume` script provided in this repository:
+
+```
+sudo cp daemon/usr/bin/picade-mixvolume /usr/bin/
+```
+
+And make sure it's executable with:
+
+```
+sudo chmod +x /usr/bin/picade-mixvolume
+```
+
+What this script does is passing commands to `amixer` and increase/decrease the volume in 10% increments. As such you will need to make sure `alsa-utils` is installed on your system (it should be by default in Retropie).
 
 And, finally, reboot and configure your controls!
