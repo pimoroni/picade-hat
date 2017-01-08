@@ -291,15 +291,18 @@ echo "Installing daemon..."
 
 sudo cp ./daemon/lib/systemd/system-shutdown/picade-hat-poweroff /lib/systemd/system-shutdown/
 sudo chmod +x /lib/systemd/system-shutdown/picade-hat-poweroff
-sudo cp ./daemon/usr/bin/picade-mixvolume /usr/bin/
-sudo chmod +x /usr/bin/picade-mixvolume
+
 sudo cp ./daemon/usr/bin/picadehatd /usr/bin/
+sudo cp ./daemon/etc/udev/rules.d/10-picadehatd.rules /etc/udev/rules.d/
 sudo cp ./daemon/etc/init.d/picadehatd /etc/init.d/
 sudo systemctl daemon-reload
 sudo systemctl enable picadehatd
 sudo service picadehatd start
 
 echo "Configuring sound output"
+
+sudo cp ./daemon/usr/bin/picade-mixvolume /usr/bin/
+sudo chmod +x /usr/bin/picade-mixvolume
 
 if [ -e $CONFIG ] && grep -q "^device_tree=$" $CONFIG; then
     DEVICE_TREE=false
