@@ -110,17 +110,11 @@ above this section for clarity, thanks!
 MAINSTART
 
 if [ "$#" -eq 0 ]; then
-    warning "a pad config is required as argument" && exit 1
+    warning "a console name is required as argument" && exit 1
 fi
 
-inform "Copying configuration in place..."
+inform "Copying $1 roms..."
 
-sudo service picadehatd stop
-sudo rm /usr/bin/picadehatd &> /dev/null
-sudo cp "$1" /usr/bin/picadehatd
-sudo chmod +x /usr/bin/picadehatd
-sudo service picadehatd start
-
-sysreboot
+sudo cp "$1" "~/Retropie/roms/$1"
 
 exit 0
