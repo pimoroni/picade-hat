@@ -19,12 +19,6 @@ was written for this script.
 
 DISCLAIMER
 
-# script control variables
-
-FORCE=$1
-GAMEPAD="picadehat-default"
-
-# function define
 
 confirm() {
     if [ "$FORCE" == '-y' ]; then
@@ -115,11 +109,13 @@ above this section for clarity, thanks!
 
 MAINSTART
 
-# copying gamepad configuration file
+if [ "$#" -eq 0 ]; then
+    warning "a pad config is required as argument" && exit 1
+fi
 
 sudo service picadehatd stop
-sudo rm /usr/bin/picadehatd
-sudo cp $GAMEPAD /usr/bin/picadehatd
+sudo rm /usr/bin/picadehatd &> /dev/null
+sudo cp "$1" /usr/bin/picadehatd
 sudo chmod +x /usr/bin/picadehatd
 sudo service picadehatd start
 

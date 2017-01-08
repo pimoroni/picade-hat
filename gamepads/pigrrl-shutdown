@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-# Adafruit PiGRRL PCB default configuration
+# Adafruit PiGRRL PCB alternative configuration
 # maps buttons to GPIO for connection to PiTFT
 # or mounting back to back to a Raspberry Pi Zero
-# soft shutdown is not supported
+# soft shutdown is supported through L bumper
 
 import time
 import signal
@@ -33,6 +33,10 @@ PIDFILE = "/var/run/picadehatd.pid"
 LOGFILE = "/var/log/picadehatd.log"
 
 BOUNCE_TIME = 0.01 # Debounce time in seconds
+SHUTDOWN_HOLD_TIME = 3 # Time in seconds that power button must be held
+
+SHUTDOWN = 4
+BUTTON_POWER = 12
 
 UP = 16
 DOWN = 26
@@ -43,13 +47,11 @@ BUTTON1 = 14
 BUTTON2 = 15
 BUTTON3 = 20
 BUTTON4 = 18
-BUTTON5 = 12
-BUTTON6 = 13
 
 ENTER = 5
 START= 6
 
-BUTTONS = [ENTER,START,BUTTON1,BUTTON2,BUTTON3,BUTTON4,BUTTON5,BUTTON6,UP,DOWN,LEFT,RIGHT]
+BUTTONS = [ENTER,START,BUTTON1,BUTTON2,BUTTON3,BUTTON4,UP,DOWN,LEFT,RIGHT]
 
 KEYS = {
     ENTER: e.KEY_ENTER,
@@ -62,11 +64,11 @@ KEYS = {
     BUTTON2: e.KEY_LEFTALT,
     BUTTON3: e.KEY_SPACE,
     BUTTON4: e.KEY_LEFTSHIFT,
-    BUTTON5: e.KEY_Z,
-    BUTTON6: e.KEY_X
 }
 
 states = [False for b in BUTTONS]
+
+shutdown_timer = None
 
 try:
     pid = os.fork()
@@ -103,6 +105,7 @@ os.dup2(se.fileno(), sys.stderr.fileno())
 gpio.setmode(gpio.BCM)
 gpio.setwarnings(False)
 gpio.setup(BUTTONS, gpio.IN, pull_up_down=gpio.PUD_UP)
+gpio.setup(BUTTON_POWER, gpio.IN, pull_up_down=gpio.PUD_UP)
 
 try:
     ui = UInput({e.EV_KEY: KEYS.values()}, name="PiGRRL-PCB", bustype=e.BUS_USB)
@@ -128,10 +131,33 @@ def handle_button(pin):
     if DEBUG:
         log("Pin: {}, KeyCode: {}, Event: {}".format(pin, key, 'press' if state else 'release'))
 
+def perform_shutdown():
+    log("Shutting down...")
+    os.system("sudo shutdown -h now")
+
+def handle_shutdown(pin):
+    global shutdown_timer
+
+    time.sleep(BOUNCE_TIME)
+    state = 0 if gpio.input(pin) else 1
+
+    if DEBUG:
+        log("Power button: {}".format('pressed' if state else 'released'))
+
+    if state and shutdown_timer is None:
+        shutdown_timer = Timer(SHUTDOWN_HOLD_TIME, perform_shutdown)
+        shutdown_timer.start()
+
+    elif not state and shutdown_timer is not None:
+        shutdown_timer.cancel()
+        shutdown_timer = None
+
 for button in BUTTONS:
     gpio.add_event_detect(button, gpio.BOTH, callback=handle_button, bouncetime=1)
 
-log("daemon running...")
+gpio.add_event_detect(BUTTON_POWER, gpio.BOTH, callback=handle_shutdown, bouncetime=1)
+
+log("Picade HAT daemon running...")
 
 try:
     signal.pause()
