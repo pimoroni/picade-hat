@@ -115,6 +115,6 @@ fi
 
 inform "Copying $1 roms..."
 
-sudo cp -R "$1" "~/RetroPie/roms/$1"
+sudo cp -R "$1" ~/RetroPie/roms/"$1"
 
 exit 0
