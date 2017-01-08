@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+# Picade HAT basic configuration
+# only maps buttons, joystick and utility inputs
+# no volume control is implemented
+# soft shutdown is supported
+
 import time
 import signal
 import os

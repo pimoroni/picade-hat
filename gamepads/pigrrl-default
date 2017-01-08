@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# Adafruit PiGRRL PCB default configuration
+# maps buttons to GPIO for connection to PiTFT
+# or mounting back to back to a Raspberry Pi Zero
+
 import time
 import signal
 import os
