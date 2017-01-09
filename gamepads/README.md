@@ -32,3 +32,5 @@ The script will copy the file in place and restart the daemon. We advise that yo
 If you paint yourself in a corner, just rerun the `setup.sh` one level up this repository, or run:
 
 `configload picadehat-default`
+
+For an exhaustive list of possible keycodes, see: https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h#L74
