@@ -8,7 +8,7 @@ For example you might want to adjust the keycode like so:
 KEYS = {
     ENTER: e.KEY_ENTER,
     ESCAPE: e.KEY_ESC,
-    COIN: e.KEY_C,
+    COIN: e.KEY_P,
     START: e.KEY_S,
     UP: e.KEY_UP,
     DOWN: e.KEY_DOWN,
@@ -23,7 +23,7 @@ KEYS = {
 }
 ```
 
-Once done, just run the `configload` script passing your config file name to it, like so:
+Once done, just run the `configload` script, passing your config file name to it, like so:
 
 `configload picadehat-custom`
 
