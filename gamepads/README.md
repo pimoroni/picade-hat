@@ -2,7 +2,7 @@
 
 Files in this directory allow you to remap the default keycodes or adjust the buttons mapping to suit particular scenarios. It can even be used for input controllers other than the Picade HAT although that can be a tad more tricky to set up, depending on what is needed.
 
-For example you might want to adjust the keycode like so:
+For example you might want to adjust the keycodes like so:
 
 ```python
 KEYS = {
