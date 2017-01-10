@@ -299,77 +299,78 @@ sudo systemctl daemon-reload
 sudo systemctl enable picadehatd
 sudo service picadehatd start
 
-echo "Configuring sound output"
+newline
+if prompt "Would you like to use the speaker amp on the Picade HAT?"; then
+    echo "Configuring sound output"
 
-sudo cp ./daemon/usr/bin/picade-mixvolume /usr/bin/
-sudo chmod +x /usr/bin/picade-mixvolume
+    sudo cp ./daemon/usr/bin/picade-mixvolume /usr/bin/
+    sudo chmod +x /usr/bin/picade-mixvolume
 
-if [ -e $CONFIG ] && grep -q "^device_tree=$" $CONFIG; then
-    DEVICE_TREE=false
-fi
+    if [ -e $CONFIG ] && grep -q "^device_tree=$" $CONFIG; then
+        DEVICE_TREE=false
+    fi
 
-if $DEVICE_TREE; then
+    if $DEVICE_TREE; then
+        echo -e "\nAdding Device Tree Entry to $CONFIG"
 
-    newline
-    echo "Adding Device Tree Entry to $CONFIG"
+        if [ -e $CONFIG ] && grep -q "^dtoverlay=i2s-mmap$" $CONFIG; then
+            echo "i2s-mmap overlay already active"
+        else
+            echo "dtoverlay=i2s-mmap" | sudo tee -a $CONFIG
+            ASK_TO_REBOOT=true
+        fi
 
-    if [ -e $CONFIG ] && grep -q "^dtoverlay=i2s-mmap$" $CONFIG; then
-        echo "i2s-mmap dtoverlay already active"
+        if [ -e $CONFIG ] && grep -q "^dtoverlay=hifiberry-dac$" $CONFIG; then
+            echo "DAC overlay already active"
+        else
+            echo "dtoverlay=hifiberry-dac" | sudo tee -a $CONFIG
+            ASK_TO_REBOOT=true
+        fi
+
+        if [ -e $BLACKLIST ]; then
+            echo -e "\nCommenting out Blacklist entry in\n$BLACKLIST"
+            sudo sed -i -e "s|^blacklist[[:space:]]*i2c-bcm2708.*|#blacklist i2c-bcm2708|" \
+                        -e "s|^blacklist[[:space:]]*snd-soc-pcm512x.*|#blacklist snd-soc-pcm512x|" \
+                        -e "s|^blacklist[[:space:]]*snd-soc-wm8804.*|#blacklist snd-soc-wm8804|" $BLACKLIST &> /dev/null
+        fi
     else
-        echo "dtoverlay=i2s-mmap" | sudo tee -a $CONFIG
+        echo -e "\nNo Device Tree Detected, not supported\n" && exit 1
+    fi
+
+    if [ -e $CONFIG ] && grep -q -E "^dtparam=audio=on$" $CONFIG; then
+        bcm2835off="no"
+        echo -e "\nDisabling default sound driver"
+        sudo sed -i "s|^dtparam=audio=on$|#dtparam=audio=on|" $CONFIG &> /dev/null
+        if [ -e $LOADMOD ] && grep -q "^snd-bcm2835" $LOADMOD; then
+            sudo sed -i "s|^snd-bcm2835|#snd-bcm2835|" $LOADMOD &> /dev/null
+        fi
         ASK_TO_REBOOT=true
-    fi
-
-    if [ -e $CONFIG ] && grep -q "^dtoverlay=hifiberry-dac$" $CONFIG; then
-        echo "dtoverlay already active"
-    else
-        echo "dtoverlay=hifiberry-dac" | sudo tee -a $CONFIG
-        ASK_TO_REBOOT=true
-    fi
-
-    if [ -e $BLACKLIST ]; then
-        newline
-        echo "Commenting out Blacklist entry in "
-        echo "$BLACKLIST"
-        sudo sed -i -e "s|^blacklist[[:space:]]*i2c-bcm2708.*|#blacklist i2c-bcm2708|" \
-                    -e "s|^blacklist[[:space:]]*snd-soc-pcm512x.*|#blacklist snd-soc-pcm512x|" \
-                    -e "s|^blacklist[[:space:]]*snd-soc-wm8804.*|#blacklist snd-soc-wm8804|" $BLACKLIST &> /dev/null
-    fi
-else
-    newline
-    echo "No Device Tree Detected, not supported"
-    newline
-    exit 1
-fi
-
-if [ -e $CONFIG ] && grep -q -E "^dtparam=audio=on$" $CONFIG; then
-    bcm2835off="no"
-    newline
-    echo "Disabling default sound driver"
-    sudo sed -i "s|^dtparam=audio=on$|#dtparam=audio=on|" $CONFIG &> /dev/null
-    if [ -e $LOADMOD ] && grep -q "^snd-bcm2835" $LOADMOD; then
+    elif [ -e $LOADMOD ] && grep -q "^snd-bcm2835" $LOADMOD; then
+        bcm2835off="no"
+        echo -e "\nDisabling default sound module"
         sudo sed -i "s|^snd-bcm2835|#snd-bcm2835|" $LOADMOD &> /dev/null
+        ASK_TO_REBOOT=true
+    else
+        echo -e "\nDefault sound driver currently not loaded"
+        bcm2835off="yes"
     fi
-    ASK_TO_REBOOT=true
-elif [ -e $LOADMOD ] && grep -q "^snd-bcm2835" $LOADMOD; then
-    bcm2835off="no"
-    newline
-    echo "Disabling default sound module"
-    sudo sed -i "s|^snd-bcm2835|#snd-bcm2835|" $LOADMOD &> /dev/null
-    ASK_TO_REBOOT=true
-else
-    newline
-    echo "Default sound driver currently not loaded"
-    bcm2835off="yes"
-fi
 
-if [ -e /etc/asound.conf ]; then
-    if [ -e /etc/asound.conf.old ]; then
-        sudo rm -f /etc/asound.conf.old
+    if [ -e /etc/asound.conf ]; then
+        if [ -e /etc/asound.conf.old ]; then
+            sudo rm -f /etc/asound.conf.old
+        fi
+        sudo mv /etc/asound.conf /etc/asound.conf.old
     fi
-    sudo mv /etc/asound.conf /etc/asound.conf.old
+    sudo cp ./daemon/etc/asound.conf /etc/asound.conf
+else
+    sudo sed -i "s|^#dtparam=audio=on$|dtparam=audio=on|" $CONFIG &> /dev/null
+    if [ -e /etc/asound.conf ]; then
+        if [ -e /etc/asound.conf.old ]; then
+            sudo rm -f /etc/asound.conf.old
+        fi
+        sudo mv /etc/asound.conf /etc/asound.conf.old
+    fi
 fi
-sudo cp ./daemon/etc/asound.conf /etc/asound.conf
 
 newline && success "All done!" && newline
 echo "Enjoy your new $productname!" && newline
