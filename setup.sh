@@ -293,8 +293,11 @@ sudo cp ./daemon/lib/systemd/system-shutdown/picade-hat-poweroff /lib/systemd/sy
 sudo chmod +x /lib/systemd/system-shutdown/picade-hat-poweroff
 
 sudo cp ./daemon/usr/bin/picadehatd /usr/bin/
+sudo chmod +x /usr/bin/picadehatd
+
 sudo cp ./daemon/etc/udev/rules.d/10-picadehatd.rules /etc/udev/rules.d/
 sudo cp ./daemon/etc/init.d/picadehatd /etc/init.d/
+
 sudo systemctl daemon-reload
 sudo systemctl enable picadehatd
 sudo service picadehatd start
