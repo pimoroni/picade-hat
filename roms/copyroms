@@ -113,8 +113,12 @@ if [ "$#" -eq 0 ]; then
     warning "a console name is required as argument" && exit 1
 fi
 
+if ! [ -d /home/pi/RetroPie/roms/ ]; then
+    warning "no RetroPie roms directory could be found!" && exit 1
+fi
+
 inform "Copying $1 roms..."
 
-sudo cp -R "$1" ~/RetroPie/roms/"$1"
+sudo cp -R "$1" /home/pi/RetroPie/roms/"$1"
 
 exit 0

@@ -375,6 +375,7 @@ else
     fi
 fi
 
+newline
 if prompt "Would you like to install the Tanglewood demo ROM?"; then
     cd ./roms
     ./copyroms megadrive
