@@ -375,8 +375,13 @@ else
     fi
 fi
 
-newline && success "All done!" && newline
-echo "Enjoy your new $productname!" && newline
+if prompt "Would you like to install the Tanglewood demo ROM?"; then
+    cd ./roms
+    ./copyroms megadrive
+fi
+
+success "\nAll done!\n"
+echo -e "Enjoy your new $productname!\n"
 
 if [ $promptreboot == "yes" ] || $ASK_TO_REBOOT; then
     sysreboot
