@@ -23,8 +23,7 @@
 				pinctrl-names = "default";
 				pinctrl-0 = <&picade_pins>;
 				status = "okay";
-				autorepeat;
-				
+	
 				up {
 					label = "Up";
 					linux,code = <103>;
