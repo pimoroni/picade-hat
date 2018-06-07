@@ -1,0 +1,114 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709";
+
+	fragment@0 {
+		target = <&gpio>;
+		__overlay__ {
+			picade_pins: picade_pins {
+				brcm,pins = <5 6 8 9 10 11 12 16 20 22 23 24 25 27>;
+				brcm,function = <0>;
+				brcm,pull = <2>;
+			};
+		};
+	};
+	
+	fragment@1 {
+		target-path = "/";
+		__overlay__ {
+			gpio-keys {
+				compatible = "gpio-keys";
+				pinctrl-names = "default";
+				pinctrl-0 = <&picade_pins>;
+				status = "okay";
+				autorepeat;
+				
+				up {
+					label = "Up";
+					linux,code = <103>;
+					gpios = <&gpio 12 1>; 
+				};
+				
+				down {
+					label = "Down";
+					linux,code = <108>;
+					gpios = <&gpio 6 1>;
+				};
+
+				left {
+					label = "Left";
+					linux,code = <105>;
+					gpios = <&gpio 20 1>;
+				};
+
+				right {
+					label = "Right";
+					linux,code = <106>;
+					gpios = <&gpio 16 1>;
+				};
+
+				button1 {
+					label = "Button 1";
+					linux,code = <29>;
+					gpios = <&gpio 5 1>;
+				};
+
+				button2 {
+					label = "Button 2";
+					linux,code = <56>;
+					gpios = <&gpio 11 1>;
+				};
+
+				button3 {
+					label = "Button 3";
+					linux,code = <57>;
+					gpios = <&gpio 8 1>;
+				};
+
+				button4 {
+					label = "Button 4";
+					linux,code = <42>;
+					gpios = <&gpio 25 1>;
+				};
+
+				button5 {
+					label = "Button 5";
+					linux,code = <44>;
+					gpios = <&gpio 9 1>;
+				};
+
+				button6 {
+					label = "Button 6";
+					linux,code = <45>;
+					gpios = <&gpio 10 1>;
+				};
+
+				enter {
+					label = "Enter";
+					linux,code = <28>;
+					gpios = <&gpio 27 1>;
+				};
+
+				escape {
+					label = "Escape";
+					linux,code = <1>;
+					gpios = <&gpio 22 1>;
+				};
+
+				coin {
+					label = "Coin";
+					linux,code = <23>;
+					gpios = <&gpio 23 1>;
+				};
+
+				start {
+					label = "Start";
+					linux,code = <24>;
+					gpios = <&gpio 24 1>;
+				};
+			};
+		};
+	};
+};
