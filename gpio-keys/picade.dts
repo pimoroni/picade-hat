@@ -16,6 +16,10 @@
 				brcm,pins = <4>;
 				brcm,function = <1>;
 			};
+			shutdown_button_pins: shutdown_button_pins {
+				brcm,pins = <17>;
+				brcm,function = <0>;
+			};
 		};
 	};
 	
@@ -165,6 +169,25 @@
 		};
 	};
 
+	fragment@7 {
+		target = <&act_led>;
+		__overlay__ {
+			linux,default-trigger = "default-on";
+			gpios = <&gpio 13 1>;
+		};
+	};
+
+	fragment@8 {
+		target = <&gpio_keys>;
+		__overlay__ {
+			power: power {
+				label = "Power";
+				linux,code = <116>; // KEY_POWER
+				gpios = <&gpio 17 1>;
+			};
+		};
+	};
+
 	__overrides__ {
 		up = <&up>,"linux,code:0";
 		down = <&down>,"linux,code:0";
@@ -180,7 +203,10 @@
 		escape = <&escape>,"linux,code:0";
 		coin = <&coin>,"linux,code:0";
 		start = <&start>,"linux,code:0";
+		led-trigger = <&act_led>,"linux,default-trigger";
 		nosound = <0>,"-3-4-5-6";
 		noaudio = <0>,"-3-4-5-6";
+		noled = <0>,"-7";
+		nopower =  <0>,"-8";
 	};
 };
