@@ -1,0 +1,1 @@
+none rc-feedback kbd-scrolllock kbd-numlock kbd-capslock kbd-kanalock kbd-shiftlock kbd-altgrlock kbd-ctrllock kbd-altlock kbd-shiftllock kbd-shiftrlock kbd-ctrlllock kbd-ctrlrlock timer oneshot heartbeat backlight gpio cpu [cpu0] cpu1 cpu2 cpu3 default-on input panic mmc1 mmc0 rfkill-any rfkill0 rfkill1 

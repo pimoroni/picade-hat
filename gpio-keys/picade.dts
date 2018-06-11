@@ -204,9 +204,9 @@
 		coin = <&coin>,"linux,code:0";
 		start = <&start>,"linux,code:0";
 		led-trigger = <&act_led>,"linux,default-trigger";
-		nosound = <0>,"-3-4-5-6";
 		noaudio = <0>,"-3-4-5-6";
-		noled = <0>,"-7";
-		nopower =  <0>,"-8";
+		noactled = <0>,"-7";
+		nopowerbtn = <0>,"-8";
+		nopoweroff = <0>,"-1";
 	};
 };
