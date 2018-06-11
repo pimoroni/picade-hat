@@ -126,6 +126,45 @@
 		};
 	};
 
+	fragment@3 {
+		target = <&i2s_pins>;
+		__overlay__ {
+			/*
+			We cannot share BCM 20 between gpio keys (Left) and i2s (PCM_DIN)
+			Assign PCM_DIN to the HAT EEPROM (ID_SD) pin which should be generally unused.
+			*/
+			brcm,pins = <18 19 0 21>;
+			brcm,function = <4 4 0 4>;
+		};
+	};
+
+	fragment@4 {
+		target = <&i2s>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@5 {
+		target-path = "/";
+		__overlay__ {
+			pcm5102a-codec {
+				#sound-dai-cells = <0>;
+				compatible = "ti,pcm5102a";
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@6 {
+		target = <&sound>;
+		__overlay__ {
+			compatible = "hifiberry,hifiberry-dac";
+			i2s-controller = <&i2s>;
+			status = "okay";
+		};
+	};
+
 	__overrides__ {
 		up = <&up>,"linux,code:0";
 		down = <&down>,"linux,code:0";
@@ -141,5 +180,7 @@
 		escape = <&escape>,"linux,code:0";
 		coin = <&coin>,"linux,code:0";
 		start = <&start>,"linux,code:0";
+		nosound = <0>,"-3-4-5-6";
+		noaudio = <0>,"-3-4-5-6";
 	};
 };
