@@ -2,7 +2,10 @@ all:
 	dtc -I dts -O dtb -o picade.dtbo picade.dts
 
 dt-remove:
-	sudo dtoverlay -r picade
+	dtoverlay -r picade
 
 dt-load:
-	sudo dtoverlay picade.dtbo
+	dtoverlay picade.dtbo
+
+install:
+	cp picade.dtbo /boot/overlays/
