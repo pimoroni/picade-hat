@@ -1,1 +1,55 @@
-none rc-feedback kbd-scrolllock kbd-numlock kbd-capslock kbd-kanalock kbd-shiftlock kbd-altgrlock kbd-ctrllock kbd-altlock kbd-shiftllock kbd-shiftrlock kbd-ctrlllock kbd-ctrlrlock timer oneshot heartbeat backlight gpio cpu [cpu0] cpu1 cpu2 cpu3 default-on input panic mmc1 mmc0 rfkill-any rfkill0 rfkill1 
+Name:   picade
+Info:   Configures keys, power, LEDs and audio on Picade HAT
+Load:   dtoverlay=picade,<param>=<val>
+Params:
+        up                      linux keycode for "up" direction, see below for list
+        down
+        left
+        right
+        button1
+        button2
+        button3
+        button4
+        button5
+        button6
+        enter
+        escape
+        coin
+        start
+        led-trigger             trigger method for act LED
+        noaudio                 disable i2s audio
+        noactled                disable hijacking the act LED
+        nopowerbtn              disable the power button
+        nopoweroff              disable asserting BCM4 on shutdown
+
+        This device tree overlay sets up the various components of Picade HAT.
+
+        Parameters to optionally disable audio, the act LED, the power button
+        and the power off pin are given if you wish to replace these with
+        Python or other alternatives.
+
+        The up, down, left, right parameters all accept a linux keycode, see:
+        https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h
+
+        The "led-trigger" parameter accepts a trigger method, for a list see:
+        cat /sys/devices/platform/leds/leds/led0/trigger
+
+        If you wish to exclude i2s audio support, supply the "noaudio" parameter.
+
+        If you don't want to hijack the act LED, supply the "noactled" parameter.
+
+        To disable the power button, supply the "nopowerbtn" parameter.
+
+        To disable asserting BCM4 on shutdown, supply the "nopoweroff" parameter.
+
+        Examples:
+
+            Bind up/down/left/right to wasd and disable audio:
+            dtoverlay=picade,up=17,down=31,left=30,right=32,noaudio
+
+            Only use the default keyboard bindings, no other features:
+            dtoverlay=picade,noaudio,noactled,nopowerbtn,nopoweroff
+
+            Set the act LED to show cpu0 activity:
+            dtoverlay=picade,led-trigger=cpu0
+
