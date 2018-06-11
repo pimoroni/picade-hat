@@ -12,10 +12,25 @@
 				brcm,function = <0>;
 				brcm,pull = <2>;
 			};
+			power_ctrl_pins: power_ctrl_pins {
+				brcm,pins = <4>;
+				brcm,function = <1>;
+			};
 		};
 	};
 	
 	fragment@1 {
+		target-path = "/";
+		__overlay__ {
+			power_ctrl: power_ctrl {
+				compatible = "gpio-poweroff";
+				gpios = <&gpio 4 1>;
+				force;
+			};
+		};
+	};
+
+	fragment@2 {
 		target-path = "/";
 		__overlay__ {
 			gpio-keys {
@@ -23,7 +38,7 @@
 				pinctrl-names = "default";
 				pinctrl-0 = <&picade_pins>;
 				status = "okay";
-	
+
 				up {
 					label = "Up";
 					linux,code = <103>;
