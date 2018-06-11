@@ -33,96 +33,113 @@
 	fragment@2 {
 		target-path = "/";
 		__overlay__ {
-			gpio-keys {
+			gpio_keys: gpio_keys {
 				compatible = "gpio-keys";
 				pinctrl-names = "default";
 				pinctrl-0 = <&picade_pins>;
 				status = "okay";
 
-				up {
+				up: up {
 					label = "Up";
 					linux,code = <103>;
 					gpios = <&gpio 12 1>; 
 				};
-				
-				down {
+
+				down: down {
 					label = "Down";
 					linux,code = <108>;
 					gpios = <&gpio 6 1>;
 				};
 
-				left {
+				left: left {
 					label = "Left";
 					linux,code = <105>;
 					gpios = <&gpio 20 1>;
 				};
 
-				right {
+				right: right {
 					label = "Right";
 					linux,code = <106>;
 					gpios = <&gpio 16 1>;
 				};
 
-				button1 {
+				button1: button1 {
 					label = "Button 1";
 					linux,code = <29>;
 					gpios = <&gpio 5 1>;
 				};
 
-				button2 {
+				button2: button2 {
 					label = "Button 2";
 					linux,code = <56>;
 					gpios = <&gpio 11 1>;
 				};
 
-				button3 {
+				button3: button3 {
 					label = "Button 3";
 					linux,code = <57>;
 					gpios = <&gpio 8 1>;
 				};
 
-				button4 {
+				button4: button4 {
 					label = "Button 4";
 					linux,code = <42>;
 					gpios = <&gpio 25 1>;
 				};
 
-				button5 {
+				button5: button5 {
 					label = "Button 5";
 					linux,code = <44>;
 					gpios = <&gpio 9 1>;
 				};
 
-				button6 {
+				button6: button6 {
 					label = "Button 6";
 					linux,code = <45>;
 					gpios = <&gpio 10 1>;
 				};
 
-				enter {
+				enter: enter {
 					label = "Enter";
 					linux,code = <28>;
 					gpios = <&gpio 27 1>;
 				};
 
-				escape {
+				escape: escape {
 					label = "Escape";
 					linux,code = <1>;
 					gpios = <&gpio 22 1>;
 				};
 
-				coin {
+				coin: coin {
 					label = "Coin";
 					linux,code = <23>;
 					gpios = <&gpio 23 1>;
 				};
 
-				start {
+				start: start {
 					label = "Start";
 					linux,code = <24>;
 					gpios = <&gpio 24 1>;
 				};
 			};
 		};
+	};
+
+	__overrides__ {
+		up = <&up>,"linux,code:0";
+		down = <&down>,"linux,code:0";
+		left = <&left>,"linux,code:0";
+		right = <&right>,"linux,code:0";
+		button1 = <&button1>,"linux,code:0";
+		button2 = <&button2>,"linux,code:0";
+		button3 = <&button3>,"linux,code:0";
+		button4 = <&button4>,"linux,code:0";
+		button5 = <&button5>,"linux,code:0";
+		button6 = <&button6>,"linux,code:0";
+		enter = <&enter>,"linux,code:0";
+		escape = <&escape>,"linux,code:0";
+		coin = <&coin>,"linux,code:0";
+		start = <&start>,"linux,code:0";
 	};
 };
