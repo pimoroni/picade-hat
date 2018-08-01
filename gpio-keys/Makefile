@@ -9,3 +9,6 @@ dt-load:
 
 install:
 	cp picade.dtbo /boot/overlays/
+
+clean:
+	rm -f picade.dtbo
