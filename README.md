@@ -62,6 +62,26 @@ It will:
 * Optionally: set up i2s audio to work with Picade HAT
 * Optionally: re-route the Pi's act LED and give you control over the trigger function
 
+Once installed, you can change the line in `/boot/config.txt` to customise your Picade HAT install:
+
+Bind up/down/left/right to wasd and disable digital audio:
+
+```
+dtoverlay=picade,up=17,down=31,left=30,right=32,noaudio
+```
+
+Only use the default keyboard bindings, no other features:
+
+```
+dtoverlay=picade,noaudio,noactled,nopowerbtn,nopoweroff
+```
+
+Set the act LED to show cpu0 activity:
+
+```
+dtoverlay=picade,led-trigger=cpu0
+```
+
 See picade.txt for full documentation.
 
 ## Manually Building & Installing
