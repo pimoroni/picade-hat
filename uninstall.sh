@@ -42,3 +42,5 @@ if [ -f "$CONFIG" ]; then
 else
 	printf "Warning: unable to find $CONFIG, is /boot mounted?\n"
 fi
+
+printf "Uninstallation finished. You must reboot for changes to take effect!\n"

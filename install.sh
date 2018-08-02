@@ -60,3 +60,5 @@ if [ -f "$CONFIG" ]; then
 else
 	printf "Warning: unable to find $CONFIG, is /boot mounted?\n"
 fi
+
+printf "Installation finished. You must reboot for changes to take effect!\n"
