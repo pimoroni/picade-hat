@@ -22,7 +22,8 @@ if [ ! -f "$OVERLAY_NAME" ]; then
 		printf "This script requires device-tree-compiler, please \"sudo apt install device-tree-compiler\"\n";
 		exit 1
 	fi
-	make
+	printf "Notice: building picade.dtbo\n";
+	make > /dev/null 2>&1
 fi
 
 if [ ! -f "$CONFIG_BACKUP" ]; then
