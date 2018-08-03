@@ -6,8 +6,12 @@ OVERLAY_NAME="picade.dtbo"
 CONFIG="/boot/config.txt"
 CONFIG_BACKUP="$CONFIG.picade-preinstall"
 
+UDEV_RULES_FILE="etc/udev/rules.d/10-picade.rules"
+ASOUND_CONF_FILE="etc/asound.conf"
+
 CONFIG_LINES=(
 	"dtoverlay=picade"
+	"dtparam=audio=off"
 )
 
 printf "Picade HAT: Installer\n\n"
@@ -36,6 +40,20 @@ if [ -d "$OVERLAY_PATH" ]; then
 	printf "Installed: $OVERLAY_PATH/$OVERLAY_NAME\n"
 else
 	printf "Warning: unable to copy $OVERLAY_NAME to $OVERLAY_PATH\n"
+fi
+
+if [ ! -f "/$UDEV_RULES_FILE" ]; then
+	cp $UDEV_RULES_FILE /$UDEV_RULES_FILE
+	printf "Installed /$UDEV_RULES_FILE\n"
+else
+	printf "Warning: /$UDEV_RULES_FILE already exists, not replacing!\n"
+fi
+
+if [ ! -f "/$ASOUND_CONF_FILE" ]; then
+	cp $ASOUND_CONF_FILE /$ASOUND_CONF_FILE
+	printf "Installed /$ASOUND_CONF_FILE\n"
+else
+	printf "Warning: /$ASOUND_CONF_FILE already exists, not replacing!\n"
 fi
 
 if [ -f "$CONFIG" ]; then

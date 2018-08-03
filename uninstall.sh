@@ -8,6 +8,7 @@ CONFIG_BACKUP="$CONFIG.picade-preuninstall"
 
 CONFIG_LINES=(
 	"dtoverlay=picade"
+	"dtparam=audio=off"
 )
 
 printf "Picade HAT: Uninstaller\n\n"
@@ -24,7 +25,17 @@ fi
 
 if [ -f "$OVERLAY_PATH/$OVERLAY_NAME" ]; then
 	rm -f $OVERLAY_PATH/$OVERLAY_NAME
-	printf "Removing $OVERLAY_PATH/$OVERLAY_NAME\n"
+	printf "Removing: $OVERLAY_PATH/$OVERLAY_NAME\n"
+fi
+
+if [ -f "/$UDEV_RULES_FILE" ]; then
+	rm -f /$UDEV_RULES_FILE
+	printf "Removing: /$UDEV_RULES_FILE\n"
+fi
+
+if [ -f "/$ASOUND_CONF_FILE" ]; then
+	rm -f /$ASOUND_CONF_FILE
+	printf "Removing: /$ASOUND_CONF_FILE!\n"
 fi
 
 if [ -f "$CONFIG" ]; then
