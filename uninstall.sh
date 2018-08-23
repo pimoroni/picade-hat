@@ -9,6 +9,7 @@ CONFIG_BACKUP="$CONFIG.picade-preuninstall"
 CONFIG_LINES=(
 	"dtoverlay=picade"
 	"dtparam=audio=off"
+	"hdmi_force_hotplug=1"
 )
 
 printf "Picade HAT: Uninstaller\n\n"

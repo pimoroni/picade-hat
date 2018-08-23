@@ -12,6 +12,7 @@ ASOUND_CONF_FILE="etc/asound.conf"
 CONFIG_LINES=(
 	"dtoverlay=picade"
 	"dtparam=audio=off"
+	"hdmi_force_hotplug=1"
 )
 
 printf "Picade HAT: Installer\n\n"
