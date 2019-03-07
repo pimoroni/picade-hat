@@ -82,6 +82,19 @@ Set the act LED to show cpu0 activity:
 dtoverlay=picade,led-trigger=cpu0
 ```
 
+**Note:** There's an 80 character line-length limit for `dtoverlay`.
+
+If you want to change many parameters you should use the `dtparam` command like so:
+
+```
+dtoverlay=pciade
+dtparam=up=17
+dtparam=down=31
+dtparam=left=30
+dtparam=right=32
+# etc
+```
+
 See picade.txt for full documentation.
 
 ## Manually Building & Installing
