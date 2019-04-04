@@ -58,15 +58,22 @@ else
 fi
 
 if [ -f "$CONFIG" ]; then
+	NEWLINE=0
 	for ((i = 0; i < ${#CONFIG_LINES[@]}; i++)); do
 		CONFIG_LINE="${CONFIG_LINES[$i]}"
 		grep -e "^#$CONFIG_LINE" $CONFIG > /dev/null
 		STATUS=$?
 		if [ $STATUS -eq 1 ]; then
-			grep -r "^$CONFIG_LINE" $CONFIG > /dev/null
+			grep -e "^$CONFIG_LINE" $CONFIG > /dev/null
 			STATUS=$?
 			if [ $STATUS -eq 1 ]; then
 				# Line is missing from config file
+				if [ ! $NEWLINE -eq 1 ]; then
+					# Add newline if this is the first new entry
+					echo "" >> $CONFIG
+					NEWLINE=1
+				fi
+				# Add the config line
 				echo "$CONFIG_LINE" >> $CONFIG
 				printf "Config: Added \"$CONFIG_LINE\" to $CONFIG\n"
 			else
