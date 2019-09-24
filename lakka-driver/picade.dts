@@ -1,0 +1,224 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709";
+
+	fragment@0 {
+		target = <&gpio>;
+		__overlay__ {
+			picade_pins: picade_pins {
+				brcm,pins = <5 6 8 9 10 11 12 14 15 16 20 22 23 24 25 27>;
+				brcm,function = <0>;
+				brcm,pull = <2>;
+			};
+			power_ctrl_pins: power_ctrl_pins {
+				brcm,pins = <4>;
+				brcm,function = <1>;
+			};
+			shutdown_button_pins: shutdown_button_pins {
+				brcm,pins = <17>;
+				brcm,function = <0>;
+			};
+		};
+	};
+	
+	fragment@1 {
+		target-path = "/";
+		__overlay__ {
+			power_ctrl: power_ctrl {
+				compatible = "gpio-poweroff";
+				gpios = <&gpio 4 1>;
+				force;
+			};
+		};
+	};
+
+	fragment@2 {
+		target-path = "/";
+		__overlay__ {
+			gpio_keys: gpio_keys {
+				compatible = "gpio-keys";
+				pinctrl-names = "default";
+				pinctrl-0 = <&picade_pins>;
+				status = "okay";
+
+				up: up {
+					label = "Up";
+					linux,code = <103>;
+					gpios = <&gpio 12 1>; 
+				};
+
+				down: down {
+					label = "Down";
+					linux,code = <108>;
+					gpios = <&gpio 6 1>;
+				};
+
+				left: left {
+					label = "Left";
+					linux,code = <105>;
+					gpios = <&gpio 20 1>;
+				};
+
+				right: right {
+					label = "Right";
+					linux,code = <106>;
+					gpios = <&gpio 16 1>;
+				};
+
+				button1: button1 {
+					label = "Button 1 / Y";
+					linux,code = <30>;
+					gpios = <&gpio 5 1>;
+				};
+
+				button2: button2 {
+					label = "Button 2 / X";
+					linux,code = <31>;
+					gpios = <&gpio 11 1>;
+				};
+
+				button3: button3 {
+					label = "Button 3 / L2";
+					linux,code = <18>;
+					gpios = <&gpio 8 1>;
+				};
+
+				button4: button4 {
+					label = "Button 4 / B";
+					linux,code = <44>;
+					gpios = <&gpio 25 1>;
+				};
+
+				button5: button5 {
+					label = "Button 5 / A";
+					linux,code = <45>;
+					gpios = <&gpio 9 1>;
+				};
+
+				button6: button6 {
+					label = "Button 6 / R2";
+					linux,code = <19>;
+					gpios = <&gpio 10 1>;
+				};
+
+				button7: button7 {
+					label = "Button 7 / Vol Up";
+					linux,code = <115>;
+					gpios = <&gpio 15 1>;
+				};
+
+				button8: button8 {
+					label = "Button 8 / Vol Down";
+					linux,code = <114>;
+					gpios = <&gpio 14 1>;
+				};
+
+				enter: enter {
+					label = "Enter";
+					linux,code = <42>;
+					gpios = <&gpio 27 1>;
+				};
+
+				escape: escape {
+					label = "Escape";
+					linux,code = <1>;
+					gpios = <&gpio 22 1>;
+				};
+
+				coin: coin {
+					label = "Coin / Select";
+					linux,code = <54>;
+					gpios = <&gpio 23 1>;
+				};
+
+				start: start {
+					label = "Start";
+					linux,code = <28>;
+					gpios = <&gpio 24 1>;
+				};
+			};
+		};
+	};
+
+	fragment@3 {
+		target = <&i2s_pins>;
+		__overlay__ {
+			/*
+			We cannot share BCM 20 between gpio keys (Left) and i2s (PCM_DIN)
+			Assign PCM_DIN to the HAT EEPROM (ID_SD) pin which should be generally unused.
+			*/
+			brcm,pins = <18 19 0 21>;
+			brcm,function = <4 4 0 4>;
+		};
+	};
+
+	fragment@4 {
+		target = <&i2s>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@5 {
+		target-path = "/";
+		__overlay__ {
+			pcm5102a-codec {
+				#sound-dai-cells = <0>;
+				compatible = "ti,pcm5102a";
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@6 {
+		target = <&sound>;
+		__overlay__ {
+			compatible = "hifiberry,hifiberry-dac";
+			i2s-controller = <&i2s>;
+			status = "okay";
+		};
+	};
+
+	fragment@7 {
+		target = <&act_led>;
+		__overlay__ {
+			linux,default-trigger = "default-on";
+			gpios = <&gpio 13 1>;
+		};
+	};
+
+	fragment@8 {
+		target = <&gpio_keys>;
+		__overlay__ {
+			power: power {
+				label = "Power";
+				linux,code = <116>; // KEY_POWER
+				gpios = <&gpio 17 1>;
+			};
+		};
+	};
+
+	__overrides__ {
+		up = <&up>,"linux,code:0";
+		down = <&down>,"linux,code:0";
+		left = <&left>,"linux,code:0";
+		right = <&right>,"linux,code:0";
+		button1 = <&button1>,"linux,code:0";
+		button2 = <&button2>,"linux,code:0";
+		button3 = <&button3>,"linux,code:0";
+		button4 = <&button4>,"linux,code:0";
+		button5 = <&button5>,"linux,code:0";
+		button6 = <&button6>,"linux,code:0";
+		enter = <&enter>,"linux,code:0";
+		escape = <&escape>,"linux,code:0";
+		coin = <&coin>,"linux,code:0";
+		start = <&start>,"linux,code:0";
+		led-trigger = <&act_led>,"linux,default-trigger";
+		noaudio = <0>,"-3-4-5-6";
+		noactled = <0>,"-7";
+		nopowerbtn = <0>,"-8";
+		nopoweroff = <0>,"-1";
+	};
+};
