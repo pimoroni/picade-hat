@@ -16,15 +16,16 @@ Once you're SSH'ed in you will need to gain write access to the "flash" boot/LAK
 mount -o,remount,rw /flash
 ```
 
-Write write access enabled you can now move `10-picade.rules` into `.config/udev.rules.d/`:
+With write access enabled, you can now copy `10-picade.rules` into `.config/udev.rules.d/`:
 
 ```
-mv /flash/10-picade.rules /storage/.config/udev.rules.d/
+cp 10-picade.rules /storage/.config/udev.rules.d/
 ```
 
 And build the device-tree overlay file you will need:
 
 ```
+cp picade.dts /flash/picade.dts
 dtc -I dts -O dtb -o /flash/overlays/picade.dtbo /flash/picade.dts
 ```
 
@@ -37,6 +38,11 @@ nano /flash/config.txt
 ```
 
 Use `CTRL+X` to exit and make sure to save your changes.
+
+Set `/flash` mountpoint back to read only mode:
+```
+mount -o,remount,ro /flash
+```
 
 Reboot to enable Picade HAT X compatibility, at this point Picade HAT X should just emulate a regular keyboard.
 
