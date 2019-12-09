@@ -41,7 +41,7 @@ Use `CTRL+X` to exit and make sure to save your changes.
 
 Set `/flash` mountpoint back to read only mode:
 ```
-mount -o,remount,ro /flash
+mount -o remount,ro /flash
 ```
 
 Reboot to enable Picade HAT X compatibility, at this point Picade HAT X should just emulate a regular keyboard.
