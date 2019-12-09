@@ -13,7 +13,7 @@ Copy `picade.dts` and `10-picade.rules` onto your Lakka system. You can either p
 Once you're SSH'ed in you will need to gain write access to the "flash" boot/LAKKA partition on the SD card:
 
 ```
-mount -o,remount,rw /flash
+mount -o remount,rw /flash
 ```
 
 With write access enabled, you can now copy `10-picade.rules` into `.config/udev.rules.d/`:
