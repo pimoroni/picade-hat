@@ -87,7 +87,7 @@ dtoverlay=picade,led-trigger=cpu0
 If you want to change many parameters you should use the `dtparam` command like so:
 
 ```
-dtoverlay=pciade
+dtoverlay=picade
 dtparam=up=17
 dtparam=down=31
 dtparam=left=30
