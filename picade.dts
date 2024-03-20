@@ -2,23 +2,27 @@
 /plugin/;
 
 / {
-	compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709";
+	compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709", "brcm,bcm2711";
 
 	fragment@0 {
 		target = <&gpio>;
 		__overlay__ {
 			picade_pins: picade_pins {
-				brcm,pins = <5 6 8 9 10 11 12 16 20 22 23 24 25 27>;
-				brcm,function = <0>;
-				brcm,pull = <2>;
+				brcm,pins =     <17 5 6 8 9 10 11 12 16 20 22 23 24 25 27>;
+				brcm,function = <0  0 0 0 0 0  0  0  0  0  0  0  0  0  0>;
+				brcm,pull =     <2  2 2 2 2 2  2  2  2  2  2  2  2  2  2>;
 			};
 			power_ctrl_pins: power_ctrl_pins {
 				brcm,pins = <4>;
 				brcm,function = <1>;
 			};
-			shutdown_button_pins: shutdown_button_pins {
-				brcm,pins = <17>;
-				brcm,function = <0>;
+			i2s_pins: i2s_pins {
+				/*
+				We cannot share BCM 20 between gpio keys (Left) and i2s (PCM_DIN)
+				Assign PCM_DIN to GPIO 26, which is unused by Picade HAT X.
+				*/
+				brcm,pins = <18 19 26 21>;
+				brcm,function = <4 4 4 4>;
 			};
 		};
 	};
@@ -126,30 +130,26 @@
 					linux,code = <24>;
 					gpios = <&gpio 24 1>;
 				};
+
+				power: power {	
+					label = "Power";
+					linux,code = <116>; // KEY_POWER
+					gpios = <&gpio 17 1>;
+				};
 			};
 		};
 	};
 
 	fragment@3 {
-		target = <&i2s_pins>;
+		target = <&i2s>;
 		__overlay__ {
-			/*
-			We cannot share BCM 20 between gpio keys (Left) and i2s (PCM_DIN)
-			Assign PCM_DIN to the HAT EEPROM (ID_SD) pin which should be generally unused.
-			*/
-			brcm,pins = <18 19 0 21>;
-			brcm,function = <4 4 0 4>;
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2s_pins>;
 		};
 	};
 
 	fragment@4 {
-		target = <&i2s>;
-		__overlay__ {
-			status = "okay";
-		};
-	};
-
-	fragment@5 {
 		target-path = "/";
 		__overlay__ {
 			pcm5102a-codec {
@@ -160,7 +160,7 @@
 		};
 	};
 
-	fragment@6 {
+	fragment@5 {
 		target = <&sound>;
 		__overlay__ {
 			compatible = "hifiberry,hifiberry-dac";
@@ -169,21 +169,13 @@
 		};
 	};
 
-	fragment@7 {
-		target = <&act_led>;
+	fragment@6 {
+		target-path = "/";
 		__overlay__ {
-			linux,default-trigger = "default-on";
-			gpios = <&gpio 13 1>;
-		};
-	};
-
-	fragment@8 {
-		target = <&gpio_keys>;
-		__overlay__ {
-			power: power {
-				label = "Power";
-				linux,code = <116>; // KEY_POWER
-				gpios = <&gpio 17 1>;
+			act_led: act_led {
+				compatible = "gpio-leds";
+				gpios = <&gpio 13 1>;
+				linux,default-trigger = "default-on";
 			};
 		};
 	};
@@ -204,9 +196,8 @@
 		coin = <&coin>,"linux,code:0";
 		start = <&start>,"linux,code:0";
 		led-trigger = <&act_led>,"linux,default-trigger";
-		noaudio = <0>,"-3-4-5-6";
-		noactled = <0>,"-7";
-		nopowerbtn = <0>,"-8";
+		noaudio = <0>,"-3-4-5";
+		noactled = <0>,"-6";
 		nopoweroff = <0>,"-1";
 	};
 };
