@@ -68,74 +68,74 @@
 				};
 
 				button1: button1 {
-					label = "Button 1 / Y";
-					linux,code = <30>;
+					label = "Button 1 / X";
+					linux,code = <0x133>;
 					gpios = <&gpio 5 1>;
 				};
 
 				button2: button2 {
-					label = "Button 2 / X";
-					linux,code = <31>;
+					label = "Button 2 / Y";
+					linux,code = <0x134>;
 					gpios = <&gpio 11 1>;
 				};
 
 				button3: button3 {
-					label = "Button 3 / L2";
-					linux,code = <18>;
+					label = "Button 3 / L1";
+					linux,code = <0x136>;
 					gpios = <&gpio 8 1>;
 				};
 
 				button4: button4 {
-					label = "Button 4 / B";
-					linux,code = <44>;
+					label = "Button 4 / A";
+					linux,code = <0x130>;
 					gpios = <&gpio 25 1>;
 				};
 
 				button5: button5 {
-					label = "Button 5 / A";
-					linux,code = <45>;
+					label = "Button 5 / B";
+					linux,code = <0x131>;
 					gpios = <&gpio 9 1>;
 				};
 
 				button6: button6 {
-					label = "Button 6 / R2";
-					linux,code = <19>;
+					label = "Button 6 / R1";
+					linux,code = <0x137>;
 					gpios = <&gpio 10 1>;
 				};
 
 				button7: button7 {
-					label = "Button 7 / Vol Up";
-					linux,code = <115>;
+					label = "Button 7 / +";
+					linux,code = <78>;
 					gpios = <&gpio 15 1>;
 				};
 
 				button8: button8 {
-					label = "Button 8 / Vol Down";
-					linux,code = <114>;
+					label = "Button 8 / -";
+					linux,code = <74>;
 					gpios = <&gpio 14 1>;
 				};
 
 				enter: enter {
-					label = "Enter";
-					linux,code = <42>;
+					label = "Enter / R2";
+					linux,code = <0x139>;
 					gpios = <&gpio 27 1>;
 				};
 
 				escape: escape {
-					label = "Escape";
-					linux,code = <1>;
+					label = "Escape / L2";
+					linux,code = <0x138>;
 					gpios = <&gpio 22 1>;
 				};
 
 				coin: coin {
 					label = "Coin / Select";
-					linux,code = <54>;
+					linux,code = <0x13b>;
 					gpios = <&gpio 23 1>;
 				};
 
 				start: start {
-					label = "Start";
-					linux,code = <28>;
+					label = "1UP / Start";
+					linux,code = <0x13a>;
 					gpios = <&gpio 24 1>;
 				};
 			};
@@ -211,6 +211,8 @@
 		button4 = <&button4>,"linux,code:0";
 		button5 = <&button5>,"linux,code:0";
 		button6 = <&button6>,"linux,code:0";
+		button7 = <&button7>,"linux,code:0";
+		button8 = <&button8>,"linux,code:0";
 		enter = <&enter>,"linux,code:0";
 		escape = <&escape>,"linux,code:0";
 		coin = <&coin>,"linux,code:0";
