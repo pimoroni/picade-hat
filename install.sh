@@ -3,7 +3,7 @@
 OVERLAY_PATH="/boot/overlays"
 OVERLAY_NAME="picade.dtbo"
 
-CONFIG="/boot/config.txt"
+CONFIG="/boot/firmware/config.txt"
 CONFIG_BACKUP="$CONFIG.picade-preinstall"
 
 UDEV_RULES_FILE="etc/udev/rules.d/10-picade.rules"
