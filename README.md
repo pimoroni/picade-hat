@@ -8,9 +8,7 @@ If you want to use the old Python driver for Picade HAT, see `legacy-python-driv
 
 # Preparing RetroPie
 
-If you're using a Pi 4 or earlier, you can create yourself a new RetroPie SD card with the image found here: https://retropie.org.uk/download/ (it's also available through Raspberry Pi Imager).
-
-If you're using a Pi 5 you'll need to flash Raspberry Pi OS to your SD card and then run [RetroPie's installer script](https://github.com/RetroPie/RetroPie-Setup).
+At the time of writing the version of Retropie served up by Raspberry Pi Imager is quite old, so we recommend flashing Raspberry Pi OS to your SD card and then running [RetroPie's installer script](https://github.com/RetroPie/RetroPie-Setup).
 
 Step by step instructions can be found in our Learn guide:
 
@@ -20,7 +18,7 @@ On first boot, at the control config screen hit F4 to exit to the command-line.
 
 # Setting Up Wi-Fi
 
-If you have a keyboard connected to your Picade, you can set-up wi-fi using the Raspberry Pi Configuration utility. Run:
+You can set-up wi-fi with Raspberry Pi Imager, or if you have a keyboard connected to your Picade, you can use the Raspberry Pi Configuration utility. Run:
 
 `sudo raspi-config`
 
