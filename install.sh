@@ -3,7 +3,7 @@
 OVERLAY_PATH="/boot/overlays"
 OVERLAY_NAME="picade.dtbo"
 
-CONFIG="/boot/config.txt"
+CONFIG="/boot/firmware/config.txt"
 CONFIG_BACKUP="$CONFIG.picade-preinstall"
 
 UDEV_RULES_FILE="etc/udev/rules.d/10-picade.rules"
@@ -20,6 +20,11 @@ printf "Picade HAT: Installer\n\n"
 if [ $(id -u) -ne 0 ]; then
 	printf "Script must be run as root. Try 'sudo ./install.sh'\n"
 	exit 1
+fi
+
+if [ ! -f "$CONFIG" ]; then
+	CONFIG="/boot/config.txt"
+	CONFIG_BACKUP="$CONFIG.picade-preinstall"
 fi
 
 if [ ! -f "$OVERLAY_NAME" ]; then
