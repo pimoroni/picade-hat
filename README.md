@@ -2,41 +2,29 @@
 
 This repository contains the software you need to get started with your Picade HAT.
 
-Before you continue, you should make sure that you're running the latest RetroPie, have your Pi connected to the internet and have a keyboard ready to run through the setup steps.
+Before you run our installer, you should make sure that you're running the latest RetroPie, have your Pi connected to the internet and have a keyboard ready to run through the setup steps.
 
 If you want to use the old Python driver for Picade HAT, see `legacy-python-driver`.
 
 # Preparing RetroPie
 
-Create yourself a new RetroPie SD card with the image found here: https://retropie.org.uk/download/
+If you're using a Pi 4 or earlier, you can create yourself a new RetroPie SD card with the image found here: https://retropie.org.uk/download/ (it's also available through Raspberry Pi Imager).
 
-If you're using a Pi 3, or a Pi with a wireless adaptor, you can also drop a `wpa_supplicant.conf` into the BOOT folder.
+If you're using a Pi 5 you'll need to flash Raspberry Pi OS to your SD card and then run [RetroPie's installer script](https://github.com/RetroPie/RetroPie-Setup).
+
+Step by step instructions can be found in our Learn guide:
+
+- [Setting Up Picade](https://learn.pimoroni.com/article/setting-up-picade)
 
 On first boot, at the control config screen hit F4 to exit to the command-line.
 
-## WiFi
+# Setting Up Wi-Fi
 
-If you dropped a `wpa_supplicant.conf` into `/boot`, it wont be installed by default, yet, but now it's easy to set up your WiFi like so:
+If you have a keyboard connected to your Picade, you can set-up wi-fi using the Raspberry Pi Configuration utility. Run:
 
-```
-sudo cp /boot/wpa_supplicant.conf /etc/wpa_supplicant/
-sudo ifdown wlan0
-sudo ifup wlan0
-``` 
+`sudo raspi-config`
 
-# One-line Installation (Recommended)
-
-Before setting up your RetroPie config, just hit F4 and then type:
-
-```
-curl -sS https://get.pimoroni.com/picadehat | bash
-```
-
-Setup will continue automatically. 
-
-When it's finished, you must reboot.
-
-Finally, bind your input as normal!
+The options to configure wi-fi are under 'System Options' > 'Wireless LAN'.
 
 # Automatic Installation
 
@@ -62,7 +50,7 @@ It will:
 * Optionally: set up i2s audio to work with Picade HAT
 * Optionally: re-route the Pi's act LED and give you control over the trigger function
 
-Once installed, you can change the line in `/boot/config.txt` to customise your Picade HAT install:
+Once installed, you can change the line in `/boot/firmware/config.txt` (or `boot/config.txt` in older OSes) to customise your Picade HAT install:
 
 Bind up/down/left/right to wasd and disable digital audio:
 
@@ -101,7 +89,7 @@ See picade.txt for full documentation.
 
 You can run `make` and `sudo make install` to install `picade.dtbo` in your `/boot/overlays/` folder.
 
-Once done, edit `/boot/config.txt` and add `dtoverlay=picade` to the bottom.
+Once done, edit `/boot/firmware/config.txt` and add `dtoverlay=picade` to the bottom.
 
 See picade.txt for the various options you can supply to this command.
 
