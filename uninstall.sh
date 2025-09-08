@@ -3,7 +3,7 @@
 OVERLAY_PATH="/boot/overlays"
 OVERLAY_NAME="picade.dtbo"
 
-CONFIG="/boot/config.txt"
+CONFIG="/boot/firmware/config.txt"
 CONFIG_BACKUP="$CONFIG.picade-preuninstall"
 
 CONFIG_LINES=(
@@ -16,6 +16,11 @@ printf "Picade HAT: Uninstaller\n\n"
 if [ $(id -u) -ne 0 ]; then
 	printf "Script must be run as root. Try 'sudo ./install.sh'\n"
 	exit 1
+fi
+
+if [ ! -f "$CONFIG" ]; then
+	CONFIG="/boot/config.txt"
+	CONFIG_BACKUP="$CONFIG.picade-preuninstall"
 fi
 
 if [ ! -f "$CONFIG_BACKUP" ]; then

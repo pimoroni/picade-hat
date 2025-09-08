@@ -22,6 +22,11 @@ if [ $(id -u) -ne 0 ]; then
 	exit 1
 fi
 
+if [ ! -f "$CONFIG" ]; then
+	CONFIG="/boot/config.txt"
+	CONFIG_BACKUP="$CONFIG.picade-preinstall"
+fi
+
 if [ ! -f "$OVERLAY_NAME" ]; then
 	if [ ! -f "/usr/bin/dtc" ]; then
 		printf "This script requires device-tree-compiler, please \"sudo apt install device-tree-compiler\"\n";
